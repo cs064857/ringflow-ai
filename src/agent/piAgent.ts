@@ -20,7 +20,6 @@ export interface AgentMessage {
     title: string;
     description: string;
     badge: string;
-    comment: string;
   };
 }
 
@@ -49,12 +48,17 @@ export class SongChorusAgent {
         summaryCard: {
           title: "重要語音片段統計",
           description: "本段為主要講述內容，包含關鍵資訊與重要觀點，建議優先聽。",
-          badge: "片段 1/3 ❯",
-          comment: "本段語音為「Heavy Rock」風格音樂，整體節奏較快，情緒強烈，適合用於影片剪輯或背景音樂。"
+          badge: "片段 1/3 ❯"
         }
       },
       {
         id: "msg-4",
+        role: "assistant",
+        timeStr: "01:27",
+        content: "本段語音為「Heavy Rock」風格音樂，整體節奏較快，情緒強烈，適合用於影片剪輯或背景音樂。"
+      },
+      {
+        id: "msg-5",
         role: "user",
         timeStr: "01:28",
         content: "已為你標記 3 個片段：",
@@ -63,7 +67,7 @@ export class SongChorusAgent {
             id: "seg-1",
             name: "片段 1",
             startSec: 84.3,
-            endSec: 113.8,
+            endSec: 117.5,
             tag: "主要內容",
             description: "主要講述內容與進場核心高潮",
             rating: 5
@@ -81,7 +85,7 @@ export class SongChorusAgent {
             id: "seg-3",
             name: "片段 3",
             startSec: 185.5,
-            endSec: 215.0,
+            endSec: 235.0,
             tag: "結尾總結",
             description: "結尾昇華段落",
             rating: 4
@@ -89,7 +93,7 @@ export class SongChorusAgent {
         ]
       },
       {
-        id: "msg-5",
+        id: "msg-6",
         role: "assistant",
         timeStr: "01:27",
         content: "已完成分析！如需要詳細的逐字稿、摘要或多語言翻譯，歡迎隨時告訴我。"
@@ -151,8 +155,7 @@ export class SongChorusAgent {
           summaryCard: {
             title: "重要語音片段統計",
             description: "AI 模型已根據聲學能量分佈識別出高能量關鍵段落。",
-            badge: "片段 1/3 ❯",
-            comment: "本段語音音訊動態清晰，情緒起伏鮮明，極適合做為個人鈴聲或社群剪輯。"
+            badge: "片段 1/3 ❯"
           }
         };
         this.messages.push(reply);
@@ -167,13 +170,12 @@ export class SongChorusAgent {
       id: "a-" + Date.now(),
       role: "assistant",
       timeStr: this.formatTimeNow(),
-      content: `我已為你標記了 3 個重要語音片段（${songTitle || "No.3"}），總長度約 ${Math.floor(duration)} 秒。以下是詳細的分析結果：`,
+      content: `我已為你標記了 3 個重要語音片段（${songTitle || "No.3"}），總長度約 ${Math.floor(duration)} 秒。\n以下是詳細的分析結果：`,
       choruses: fallbackChoruses,
       summaryCard: {
         title: "重要語音片段統計",
         description: "本段為主要講述內容，包含關鍵資訊與重要觀點，建議優先聽。",
-        badge: "片段 1/3 ❯",
-        comment: "本段音訊節奏分明，能量充沛，非常適合設為 iPhone 專用來電鈴聲或轉錄至 GarageBand。"
+        badge: "片段 1/3 ❯"
       }
     };
     this.messages.push(reply);
