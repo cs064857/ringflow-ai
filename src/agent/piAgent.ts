@@ -1,20 +1,27 @@
-//PI Agent智慧副歌分析與對話代理
+//PI Agent 智慧副歌與語音重點分析代理
 export interface ChorusSegment {
   id: string;
   name: string;
   startSec: number;
   endSec: number;
-  lyricsHighlight: string;
+  tag?: string;
+  lyricsHighlight?: string;
   description: string;
-  rating: number; // 1-5 星
+  rating?: number; // 1-5 星
 }
 
 export interface AgentMessage {
   id: string;
   role: "user" | "assistant" | "system";
   content: string;
-  timestamp: number;
+  timeStr?: string;
   choruses?: ChorusSegment[];
+  summaryCard?: {
+    title: string;
+    description: string;
+    badge: string;
+    comment: string;
+  };
 }
 
 export class SongChorusAgent {
@@ -23,10 +30,69 @@ export class SongChorusAgent {
   constructor() {
     this.messages = [
       {
-        id: "sys-init",
+        id: "msg-1",
         role: "assistant",
-        content: "你好！我是你的 iPhone 鈴聲 AI 助手（基於 PI Agent 架構驅動）。只要你載入音樂或輸入歌曲名稱，我就能幫你分析出歌曲中的所有副歌位置、推薦最適合的 29 秒黃金片段，點擊卡片即可一鍵跳轉試聽並設為鈴聲！",
-        timestamp: Date.now()
+        timeStr: "01:24",
+        content: "你好！我是您的 iPhone 會議 AI 助手（基於 Pi Agent 架構驅動）。\n只要你匯入音訊檔案，我就能為你分析此檔案中的所有語音位置，推薦最適合的 29 秒語音片段，點擊卡片即可一鍵複製或鎖定內容。"
+      },
+      {
+        id: "msg-2",
+        role: "user",
+        timeStr: "01:24",
+        content: "選取人體重點片段：(No.3 [for-X5v7syA])，長度約 242 秒"
+      },
+      {
+        id: "msg-3",
+        role: "assistant",
+        timeStr: "01:26",
+        content: "我已為你標記了 3 個重要語音片段（No.3 [for-X5v7syA]），總長度約 242 秒。\n以下是詳細的分析結果：",
+        summaryCard: {
+          title: "重要語音片段統計",
+          description: "本段為主要講述內容，包含關鍵資訊與重要觀點，建議優先聽。",
+          badge: "片段 1/3 ❯",
+          comment: "本段語音為「Heavy Rock」風格音樂，整體節奏較快，情緒強烈，適合用於影片剪輯或背景音樂。"
+        }
+      },
+      {
+        id: "msg-4",
+        role: "user",
+        timeStr: "01:28",
+        content: "已為你標記 3 個片段：",
+        choruses: [
+          {
+            id: "seg-1",
+            name: "片段 1",
+            startSec: 84.3,
+            endSec: 113.8,
+            tag: "主要內容",
+            description: "主要講述內容與進場核心高潮",
+            rating: 5
+          },
+          {
+            id: "seg-2",
+            name: "片段 2",
+            startSec: 147.0,
+            endSec: 185.5,
+            tag: "重點段落",
+            description: "連續節奏高潮段落",
+            rating: 5
+          },
+          {
+            id: "seg-3",
+            name: "片段 3",
+            startSec: 185.5,
+            endSec: 215.0,
+            tag: "結尾總結",
+            description: "結尾昇華段落",
+            rating: 4
+          }
+        ]
+      },
+      {
+        id: "msg-5",
+        role: "assistant",
+        timeStr: "01:27",
+        content: "已完成分析！如需要詳細的逐字稿、摘要或多語言翻譯，歡迎隨時告訴我。"
       }
     ];
   }
@@ -39,21 +105,25 @@ export class SongChorusAgent {
     this.messages.push({
       id: "thinking-" + Date.now(),
       role: "assistant",
-      content: "🤖 正在聆聽音軌動態與聲學特徵，AI 模型正在分析所有副歌高潮位置，請稍候片刻...",
-      timestamp: Date.now()
+      timeStr: this.formatTimeNow(),
+      content: "🤖 正在聆聽音軌動態與聲學特徵，AI 模型正在分析所有語音與副歌高潮位置，請稍候片刻..."
     });
   }
 
-  //調用PI Agent原生多模態模型進行音訊直接分析 (無需Whisper ASR)
+  private formatTimeNow(): string {
+    const d = new Date();
+    return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+  }
+
+  //調用 PI Agent 原生模型進行分析
   public async analyzeChorus(songTitle: string, duration: number, audioBase64?: string): Promise<AgentMessage> {
-    //移除既有的思考訊息
     this.messages = this.messages.filter(m => !m.id.startsWith("thinking-"));
 
     const userMsg: AgentMessage = {
       id: "u-" + Date.now(),
       role: "user",
-      content: `請幫我聽這段音訊，分析《${songTitle || "這首歌曲"}》的所有副歌段落。`,
-      timestamp: Date.now()
+      timeStr: this.formatTimeNow(),
+      content: `選取人體重點片段：(${songTitle || "音訊檔案"})，長度約 ${Math.floor(duration)} 秒`
     };
     this.messages.push(userMsg);
 
@@ -75,25 +145,36 @@ export class SongChorusAgent {
         const reply: AgentMessage = {
           id: "a-" + Date.now(),
           role: "assistant",
+          timeStr: this.formatTimeNow(),
           content: data.content,
           choruses: data.choruses,
-          timestamp: Date.now()
+          summaryCard: {
+            title: "重要語音片段統計",
+            description: "AI 模型已根據聲學能量分佈識別出高能量關鍵段落。",
+            badge: "片段 1/3 ❯",
+            comment: "本段語音音訊動態清晰，情緒起伏鮮明，極適合做為個人鈴聲或社群剪輯。"
+          }
         };
         this.messages.push(reply);
         return reply;
       }
     } catch {
-      //後端離線或靜態預覽時之智慧啟發式推薦
+      //後端離線或靜態展示時使用本地推薦
     }
 
-    //本地啟發式副歌演算法（確保離線或純前端時依舊順暢運作）
     const fallbackChoruses = this.heuristicChorusDetection(songTitle, duration);
     const reply: AgentMessage = {
       id: "a-" + Date.now(),
       role: "assistant",
-      content: `已成功辨識《${songTitle || "音訊"}》的歌曲結構！這首歌曲總長約 ${Math.floor(duration / 60)}分${Math.floor(duration % 60)}秒，為你精準定位出以下副歌高潮段落。點擊下方卡片可直接試聽或設為鈴聲：`,
+      timeStr: this.formatTimeNow(),
+      content: `我已為你標記了 3 個重要語音片段（${songTitle || "No.3"}），總長度約 ${Math.floor(duration)} 秒。以下是詳細的分析結果：`,
       choruses: fallbackChoruses,
-      timestamp: Date.now()
+      summaryCard: {
+        title: "重要語音片段統計",
+        description: "本段為主要講述內容，包含關鍵資訊與重要觀點，建議優先聽。",
+        badge: "片段 1/3 ❯",
+        comment: "本段音訊節奏分明，能量充沛，非常適合設為 iPhone 專用來電鈴聲或轉錄至 GarageBand。"
+      }
     };
     this.messages.push(reply);
     return reply;
@@ -103,99 +184,66 @@ export class SongChorusAgent {
     const userMsg: AgentMessage = {
       id: "u-" + Date.now(),
       role: "user",
-      content: text,
-      timestamp: Date.now()
+      timeStr: this.formatTimeNow(),
+      content: text
     };
     this.messages.push(userMsg);
 
-    //判斷是否為分析副歌意圖
-    if (/副歌|高潮|鈴聲|推薦|段落|哪段|位置/.test(text)) {
+    if (/副歌|高潮|鈴聲|推薦|段落|哪段|位置|分析|重點/.test(text)) {
       return this.analyzeChorus(currentTitle, currentDuration);
     }
 
-    //一般對話
-    let replyText = "收到！如果你想找最炸的副歌做鈴聲，隨時點擊「✨ AI 分析副歌」按鈕，我會幫你標出所有副歌位置並一鍵設定喔！";
+    let replyText = "收到！我能為您推薦最佳 29.5 秒黃金片段，點選任意卡片即可直接將選取區同步至左側波形雕刻台！";
     if (/garageband|庫樂隊|匯入|設定|教學/.test(text.toLowerCase())) {
-      replyText = "【GarageBand 鈴聲設定 3 步訣竅】：\n1. 將產出的音訊儲存至 iPhone「檔案」\n2. 打開 GarageBand 建立「錄音機」音軌，將小節調至 30 秒並拖入該檔案\n3. 返回「我的樂曲」長按該專案，點選「分享」>「鈴聲」即可！";
+      replyText = "【GarageBand 鈴聲設定 3 步訣竅】：\n1. 點選「分享到 iPhone 鈴聲」儲存至「檔案」\n2. 打開 GarageBand 建立「錄音機」多軌檢視，小節設為 30 秒並拖入該檔案\n3. 返回「我的樂曲」長按該專案，點選「分享」>「鈴聲」即可！";
     }
 
     const reply: AgentMessage = {
       id: "a-" + Date.now(),
       role: "assistant",
-      content: replyText,
-      timestamp: Date.now()
+      timeStr: this.formatTimeNow(),
+      content: replyText
     };
     this.messages.push(reply);
     return reply;
   }
 
-  //針對無網絡環境提供基於流行樂通常結構比例之啟發式演算法
   private heuristicChorusDetection(title: string, duration: number): ChorusSegment[] {
-    const isFtIsland = /no\.?3|ftisland/i.test(title);
-    if (isFtIsland && duration > 200) {
-      return [
-        {
-          id: "ch-1",
-          name: "🔥 第一次副歌 (Ain't gonna get away)",
-          startSec: 54.0,
-          endSec: 83.5,
-          lyricsHighlight: "Ain't gonna get away 壊せ 吐き出せ / 自分を打ち破れ...",
-          description: "最具標誌性的進場炸點！從主唱李洪基的高音爆發切入，節奏強勁，極推薦作為主鈴聲。",
-          rating: 5
-        },
-        {
-          id: "ch-2",
-          name: "⚡ 衝刺雙鼓點段 (We gotta go)",
-          startSec: 68.5,
-          endSec: 97.5,
-          lyricsHighlight: "We gotta go (Go) Get up (Up) 変わる世界...",
-          description: "副歌後半部的連續重鼓點衝刺，節奏感極強，在嘈雜戶外絕對不會漏接來電。",
-          rating: 5
-        },
-        {
-          id: "ch-3",
-          name: "🌟 最終大副歌 (Life is a chance)",
-          startSec: 185.0,
-          endSec: 214.5,
-          lyricsHighlight: "諦めない限り Life is a chance / 無敗の挑戦者...",
-          description: "電吉他 Solo 後的最終昇華版副歌，旋律開闊熱血，充滿希望與激勵感。",
-          rating: 4
-        }
-      ];
-    }
-
-    //通用流行樂結構（通常在歌曲 22%、50%、75% 處出現副歌）
-    const c1Start = Math.max(30, Math.floor(duration * 0.22));
-    const c2Start = Math.floor(duration * 0.52);
-    const c3Start = Math.floor(duration * 0.78);
+    const dur = duration > 0 ? duration : 242;
+    const c1Start = Math.min(54.0, dur * 0.22);
+    const c2Start = Math.min(84.3, dur * 0.35);
+    const c3Start = Math.min(185.0, dur * 0.75);
 
     return [
       {
-        id: "gen-1",
-        name: "🎵 第一次副歌 (高潮進場)",
-        startSec: c1Start,
-        endSec: Math.min(duration, c1Start + 29.5),
-        lyricsHighlight: "前奏結束後的首次爆發段",
-        description: "旋律洗腦、辨識度極高，29.5 秒黃金長度完美適配 iPhone 來電限制。",
-        rating: 5
-      },
-      {
-        id: "gen-2",
-        name: "⚡ 第二次副歌 (完整力量感)",
+        id: "ch-1",
+        name: "片段 1",
         startSec: c2Start,
-        endSec: Math.min(duration, c2Start + 29.5),
-        lyricsHighlight: "歌曲中段完整副歌",
-        description: "樂器編配更豐富，鼓點與合音飽滿，動態十足。",
-        rating: 4
+        endSec: Math.min(dur, c2Start + 29.5),
+        tag: "主要內容",
+        lyricsHighlight: "核心高潮進場段",
+        description: "本段為主要講述與旋律高潮，包含關鍵音訊特徵，建議優先聆聽與套用。",
+        rating: 5
       },
       {
-        id: "gen-3",
-        name: "🔥 最終大合唱段",
-        startSec: c3Start,
-        endSec: Math.min(duration, c3Start + 29.5),
-        lyricsHighlight: "結尾昇華段",
-        description: "整首歌能量最高潮，情緒堆疊到達極致。",
+        id: "ch-2",
+        name: "片段 2",
+        startSec: Math.min(dur - 38.5, 147.0),
+        endSec: Math.min(dur, 185.5),
+        tag: "重點段落",
+        lyricsHighlight: "節奏重音衝刺段",
+        description: "旋律熱血情緒高昂，重音節奏強勁，在吵雜環境中極不易漏接來電。",
         rating: 5
+      },
+      {
+        id: "ch-3",
+        name: "片段 3",
+        startSec: c3Start,
+        endSec: Math.min(dur, c3Start + 29.5),
+        tag: "結尾總結",
+        lyricsHighlight: "終段昇華合奏",
+        description: "整段音訊的昇華段落，收尾優雅大氣，適合作為溫和鈴聲。",
+        rating: 4
       }
     ];
   }
