@@ -127,13 +127,13 @@ export class SongChorusAgent {
     };
     this.messages.push(userMsg);
 
-    if (/副歌|高潮|鈴聲|推薦|段落|哪段|位置|分析|重點/.test(text)) {
+    if (/副歌|高潮|鈴聲|推薦|段落|哪段|位置|分析|重點|人聲|歌詞|起點/.test(text)) {
       return this.analyzeChorus(currentTitle, currentDuration);
     }
 
     let replyText = "收到！我能為您推薦最佳 29.5 秒黃金片段，點選任意卡片即可直接將選取區同步至左側波形雕刻台！";
     if (/garageband|庫樂隊|匯入|設定|教學/.test(text.toLowerCase())) {
-      replyText = "【GarageBand 鈴聲設定 3 步訣竅】：\n1. 點選「分享到 iPhone 鈴聲」儲存至「檔案」\n2. 打開 GarageBand 建立「錄音機」多軌檢視，小節設為 30 秒並拖入該檔案\n3. 返回「我的樂曲」長按該專案，點選「分享」>「鈴聲」即可！";
+      replyText = "【GarageBand 鈴聲設定 3 步訣竅】：\n1. 點選「分享到 iPhone 鈴聲」將 .m4r 儲存至「檔案」APP\n2. 打開 GarageBand 建立「錄音機」多軌檢視，小節設為 30 秒並拖入該檔案\n3. 返回「我的樂曲」長按該專案，點選「分享」>「電話鈴聲」即可！";
     }
 
     const reply: AgentMessage = {

@@ -376,7 +376,42 @@ class RingflowApp {
               </div>
 
               <!-- 底部輸入框 (Input Bar) -->
-              <div class="p-3 md:p-4 bg-white border-t border-[#f0eae0]">
+              <div class="p-3 md:p-4 bg-white border-t border-[#f0eae0] flex flex-col gap-2.5">
+                <!-- 常用快捷選項按鈕列 (Quick Action Pills) -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
+                  <button
+                    class="btn-quick-prompt px-2.5 py-1 rounded-full bg-[#faf7f2] hover:bg-orange-50 hover:border-orange-300 border border-[#ece3d4] text-[11px] font-bold text-slate-700 hover:text-orange-600 transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                    data-prompt="幫我找出這首歌所有副歌的黃金 29 秒"
+                  >
+                    <span>🔥</span>
+                    <span>所有副歌黃金 29 秒</span>
+                  </button>
+
+                  <button
+                    class="btn-quick-prompt px-2.5 py-1 rounded-full bg-[#faf7f2] hover:bg-orange-50 hover:border-orange-300 border border-[#ece3d4] text-[11px] font-bold text-slate-700 hover:text-orange-600 transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                    data-prompt="分析歌曲人聲進場點與前奏結束位置，精確切齊第一句歌詞"
+                  >
+                    <span>⚡</span>
+                    <span>人聲/歌詞起點偵測</span>
+                  </button>
+
+                  <button
+                    class="btn-quick-prompt px-2.5 py-1 rounded-full bg-[#faf7f2] hover:bg-orange-50 hover:border-orange-300 border border-[#ece3d4] text-[11px] font-bold text-slate-700 hover:text-orange-600 transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                    data-prompt="分析這段音訊最適合當 iPhone 來電鈴聲的高辨識度段落"
+                  >
+                    <span>🔔</span>
+                    <span>高辨識度來電推薦</span>
+                  </button>
+
+                  <button
+                    class="btn-quick-prompt px-2.5 py-1 rounded-full bg-[#faf7f2] hover:bg-orange-50 hover:border-orange-300 border border-[#ece3d4] text-[11px] font-bold text-slate-700 hover:text-orange-600 transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                    data-prompt="請教我如何在 iPhone 上透過 GarageBand 將此音訊設定為來電鈴聲"
+                  >
+                    <span>📱</span>
+                    <span>GarageBand 匯入教學</span>
+                  </button>
+                </div>
+
                 <div class="relative bg-[#faf7f2] border border-[#ece3d4] focus-within:border-orange-400 focus-within:bg-white rounded-2xl p-2.5 md:p-3 transition-all">
                   <div class="flex items-start gap-3">
                     <!-- 左側橙色圓形閃亮圖標 -->
@@ -387,7 +422,7 @@ class RingflowApp {
                     </div>
 
                     <div class="flex-1">
-                      <textarea id="inputPrompt" rows="2" class="w-full bg-transparent border-0 resize-none text-xs md:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-hidden leading-relaxed" placeholder="輸入 AI 指令，例如：&#10;「幫我找出這首歌最嗨的副歌段落」、「推薦 30 秒鈴聲區間」"></textarea>
+                      <textarea id="inputPrompt" rows="2" class="w-full bg-transparent border-0 resize-none text-xs md:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-hidden leading-relaxed" placeholder="輸入 AI 指令，例如：&#10;「幫我找出這首歌所有副歌的黃金 29 秒」"></textarea>
                     </div>
 
                     <!-- 右側發送按鈕 -->
@@ -758,11 +793,11 @@ class RingflowApp {
       if (charCount) charCount.textContent = `${inputPrompt.value.length}/2000`;
     });
 
-    const handleSend = async () => {
-      const text = inputPrompt?.value.trim();
+    const handleSend = async (customText?: string) => {
+      const text = (customText !== undefined ? customText : inputPrompt?.value)?.trim();
       if (!text) return;
 
-      inputPrompt.value = "";
+      if (inputPrompt) inputPrompt.value = "";
       if (charCount) charCount.textContent = "0/2000";
 
       this.renderChatMessages();
@@ -770,12 +805,22 @@ class RingflowApp {
       this.renderChatMessages();
     };
 
-    btnSendPrompt?.addEventListener("click", handleSend);
+    btnSendPrompt?.addEventListener("click", () => handleSend());
     inputPrompt?.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         handleSend();
       }
+    });
+
+    // 11. 常用快捷選項按鈕點擊觸發
+    document.querySelectorAll<HTMLButtonElement>(".btn-quick-prompt").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const promptText = btn.getAttribute("data-prompt");
+        if (promptText) {
+          handleSend(promptText);
+        }
+      });
     });
   }
 
