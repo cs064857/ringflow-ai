@@ -107,7 +107,7 @@ const SVGS = {
     </svg>
   `,
   robotAvatar: `
-    <div class="w-8.5 h-8.5 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-xs shrink-0">
+    <div class="w-9 h-9 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-xs shrink-0">
       <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="11" width="18" height="10" rx="2"/>
         <circle cx="12" cy="5" r="2"/>
@@ -157,19 +157,19 @@ function renderApp() {
     <div class="min-h-screen flex flex-col justify-between">
       <!-- 頂部頂級導航列 (白卡片設計 + 橘色音波 Logo) -->
       <div class="w-full max-w-[1400px] mx-auto pt-3 sm:pt-5 px-3 sm:px-6">
-        <header class="bg-white border border-[#e8ded2] rounded-2xl px-4 sm:px-6 py-3 sm:py-3.5 flex items-center justify-between shadow-xs">
+        <header class="bg-white border border-[#e8ded2] rounded-2xl px-5 sm:px-6 py-3.5 flex items-center justify-between shadow-xs">
           <!-- Logo (橘色音波 + RINGFLOW) -->
-          <div class="flex items-center gap-2.5 sm:gap-3">
+          <div class="flex items-center gap-3">
             <div class="flex items-center justify-center">
               ${SVGS.logo}
             </div>
-            <span class="font-black text-lg sm:text-xl tracking-wider text-slate-900 select-none">
+            <span class="font-black text-xl tracking-wider text-slate-900 select-none">
               RINGFLOW
             </span>
           </div>
 
           <!-- 鈴聲教學快速入口按鈕 -->
-          <button id="btn-open-guide" class="rf-btn-white-pill text-xs px-3 sm:px-3.5 py-1.5 font-medium shadow-none hover:shadow-xs flex items-center gap-1.5">
+          <button id="btn-open-guide" class="rf-btn-white-pill text-xs px-3.5 py-1.5 font-medium shadow-none hover:shadow-xs flex items-center gap-1.5">
             ${SVGS.book}
             <span>鈴聲匯入教學</span>
           </button>
@@ -177,31 +177,31 @@ function renderApp() {
       </div>
 
       <!-- 主工作區 (左側 7 欄 + 右側 5 欄) -->
-      <main class="flex-1 max-w-[1400px] mx-auto w-full p-3 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <main class="flex-1 max-w-[1400px] mx-auto w-full p-3 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-start">
         
         <!-- ==================== 左側：音訊處理工作區 (佔 7 欄) ==================== -->
-        <section class="lg:col-span-7 flex flex-col gap-4 sm:gap-5">
+        <section class="lg:col-span-7 flex flex-col gap-5">
           
           <!-- 1. 語音檔案處理卡片 -->
-          <div class="rf-panel-card p-4 sm:p-5 bg-white">
-            <div class="flex items-center justify-between mb-3">
+          <div class="rf-panel-card p-5 sm:p-6 bg-white">
+            <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
                 <!-- 橙黃色圓角圖標 -->
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-400 flex items-center justify-center text-white shadow-xs shrink-0">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-400 flex items-center justify-center text-white shadow-xs shrink-0">
                   ${SVGS.audioDoc}
                 </div>
                 <div>
-                  <h2 class="text-sm sm:text-[15px] font-bold text-slate-800 leading-tight">語音檔案處理</h2>
-                  <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">支援多種格式（MP3、WAV、M4A、FLAC、AAC）</p>
+                  <h2 class="text-base font-bold text-slate-800 leading-tight">語音檔案處理</h2>
+                  <p class="text-xs text-slate-400 mt-0.5">支援多種格式（MP3、WAV、M4A、FLAC、AAC）</p>
                 </div>
               </div>
 
               <!-- 右側標籤 No. 3 與 等待處理 -->
-              <div class="flex items-center gap-1.5 sm:gap-2">
-                <span id="badge-file-no" class="text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 font-mono-num font-medium border border-slate-200">
+              <div class="flex items-center gap-2">
+                <span id="badge-file-no" class="text-xs px-3 py-0.5 rounded-full bg-slate-100 text-slate-500 font-mono-num font-medium border border-slate-200">
                   No. 3
                 </span>
-                <span id="badge-file-status" class="text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-0.5 rounded-full bg-[#fef3c7] text-[#b45309] font-medium border border-[#fde68a]">
+                <span id="badge-file-status" class="text-xs px-3 py-0.5 rounded-full bg-[#fef3c7] text-[#b45309] font-medium border border-[#fde68a]">
                   等待處理
                 </span>
               </div>
@@ -210,67 +210,67 @@ function renderApp() {
             <!-- 拖曳或點選上傳本地檔案區域 -->
             <div
               id="drop-zone"
-              class="border border-dashed border-[#dfd5c7] hover:border-orange-400 rounded-xl p-3.5 sm:p-4 text-center cursor-pointer transition-all bg-[#faf7f2] hover:bg-[#fffcf9] flex flex-row items-center justify-between gap-3 group"
+              class="border-1.5 border-dashed border-[#dfd5c7] hover:border-orange-400 rounded-2xl p-4 sm:p-5 transition-all bg-[#faf7f2] hover:bg-[#fffcf9] flex flex-row items-center justify-between gap-4 group cursor-pointer"
             >
               <input id="input-file" type="file" accept="audio/*" class="hidden" />
               
-              <div class="flex items-center gap-3 text-left">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-100/80 text-orange-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <div class="flex items-center gap-3.5 text-left">
+                <div class="w-11 h-11 rounded-full bg-orange-100/80 text-orange-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   ${SVGS.cloudUpload}
                 </div>
                 <div>
-                  <p class="text-xs sm:text-[13px] font-bold text-slate-700 group-hover:text-orange-600 transition-colors">
-                    點擊或拖曳音訊檔至此 <span class="hidden sm:inline text-[11px] text-slate-400 font-normal">（MP3, WAV, M4A, FLAC, AAC）</span>
+                  <p class="text-[13px] sm:text-sm font-bold text-slate-700 group-hover:text-orange-600 transition-colors">
+                    點擊或拖曳音訊檔至此 <span class="hidden sm:inline text-xs text-slate-400 font-normal">（MP3, WAV, M4A, FLAC, AAC）</span>
                   </p>
-                  <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">支援檔案上傳 · Web Audio 錄製 · URL 連結匯入</p>
+                  <p class="text-xs text-slate-400 mt-0.5">支援檔案上傳 · Web Audio 錄製 · URL 連結匯入</p>
                 </div>
               </div>
 
-              <button type="button" class="rf-btn-white-pill px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap pointer-events-none shrink-0 flex items-center gap-1.5">
+              <button type="button" class="rf-btn-white-pill px-4 py-2 text-xs font-semibold whitespace-nowrap pointer-events-none shrink-0 flex items-center gap-1.5 shadow-xs">
                 ${SVGS.folder}
                 <span>選擇檔案</span>
               </button>
             </div>
 
             <!-- YouTube 或網址快速解析列 -->
-            <div class="mt-2.5 flex gap-2">
+            <div class="mt-3 flex gap-2">
               <input
                 id="input-youtube"
                 type="text"
                 placeholder="貼上 YouTube 影片網址或音訊串流連結 (例如 https://youtu.be/...)"
-                class="flex-1 bg-white border border-[#e2d8cd] rounded-lg px-3 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-orange-400 font-mono-num transition-colors"
+                class="flex-1 bg-white border border-[#e2d8cd] rounded-xl px-3.5 py-2 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-orange-400 font-mono-num transition-colors"
               />
-              <button id="btn-load-youtube" class="rf-btn-white-pill text-xs px-3 py-1.5 whitespace-nowrap font-medium">
+              <button id="btn-load-youtube" class="rf-btn-white-pill text-xs px-3.5 py-2 whitespace-nowrap font-medium">
                 <span>解析載入</span>
               </button>
             </div>
           </div>
 
           <!-- 2. 試聽錄音檔與波形雕刻控制台 -->
-          <div class="rf-panel-card p-4 sm:p-5 bg-white">
+          <div class="rf-panel-card p-5 sm:p-6 bg-white">
             
             <!-- 頂部資訊列：播放按鈕、標題、時間碼 -->
-            <div class="flex items-center justify-between mb-3.5">
-              <div class="flex items-center gap-3">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3.5">
                 <!-- 亮橘色圓形播放按鈕 -->
                 <button 
                   id="btn-play-pause" 
-                  class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-orange-500/30 hover:scale-105 active:scale-95 transition-transform shrink-0"
+                  class="w-12 h-12 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-orange-500/30 hover:scale-105 active:scale-95 transition-transform shrink-0"
                   title="播放/暫停"
                 >
                   <span id="play-icon">${SVGS.play}</span>
                 </button>
 
                 <div>
-                  <div class="flex items-center gap-1.5">
-                    <h3 id="song-title-display" class="font-bold text-sm sm:text-base text-slate-800 cursor-pointer hover:text-orange-600 transition-colors" title="點擊修改名稱">
+                  <div class="flex items-center gap-2">
+                    <h3 id="song-title-display" class="font-bold text-base text-slate-800 cursor-pointer hover:text-orange-600 transition-colors" title="點擊修改名稱">
                       試聽錄音檔
                     </h3>
                     <button id="btn-edit-title" title="修改名稱">
                       ${SVGS.pencil}
                     </button>
                   </div>
-                  <p id="song-meta-display" class="text-[11px] sm:text-xs text-slate-400 font-mono-num mt-0.5">
+                  <p id="song-meta-display" class="text-xs text-slate-400 font-mono-num mt-0.5">
                     MP3 · 3.2 MB · 04:02.7
                   </p>
                 </div>
@@ -278,15 +278,15 @@ function renderApp() {
 
               <!-- 時間碼顯示器 -->
               <div class="text-right">
-                <div class="text-[9px] sm:text-[10px] tracking-wider uppercase font-mono-num text-slate-400 font-semibold">PLAYHEAD TIMECODE</div>
-                <div id="playback-time" class="font-mono-num text-base sm:text-lg font-black text-amber-600 tracking-tight">
+                <div class="text-[10px] tracking-wider uppercase font-mono-num text-slate-400 font-semibold">PLAYHEAD TIMECODE</div>
+                <div id="playback-time" class="font-mono-num text-lg sm:text-xl font-black text-amber-600 tracking-tight">
                   01:04.0 <span class="text-slate-400 font-normal text-xs sm:text-sm">/ 04:02.7</span>
                 </div>
               </div>
             </div>
 
             <!-- Canvas 專業高動態波形圖 -->
-            <div class="relative w-full h-32 sm:h-40 bg-[#fcfaf7] rounded-xl border border-[#ece4d8] overflow-hidden mb-4">
+            <div class="relative w-full h-36 sm:h-42 bg-[#fcfaf7] rounded-2xl border border-[#ece4d8] overflow-hidden mb-5">
               <canvas id="waveform-canvas" class="w-full h-full cursor-crosshair touch-none"></canvas>
               <div id="loading-overlay" class="absolute inset-0 bg-white/85 backdrop-blur-xs flex items-center justify-center text-xs text-orange-600 font-medium hidden">
                 <div class="flex items-center gap-2.5">
@@ -297,17 +297,17 @@ function renderApp() {
             </div>
 
             <!-- 3. 三欄式時間戳控制台 (START 起點 / END 終點 / 持續時間) -->
-            <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
+            <div class="grid grid-cols-3 gap-2.5 sm:gap-3.5 mb-5">
               <!-- 起點控制 -->
-              <div class="rf-inner-card p-2 sm:p-3 bg-[#ffffff]">
-                <div class="flex items-center justify-between mb-0.5 sm:mb-1">
-                  <span class="text-[11px] sm:text-xs font-bold text-red-500 flex items-center gap-1">
+              <div class="rf-inner-card p-3 sm:p-3.5 bg-white flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-bold text-red-500 flex items-center gap-1">
                     ${SVGS.startTriangle}
                     <span class="font-black">START</span> <span class="hidden sm:inline text-slate-400 font-normal text-[11px]">起點</span>
                   </span>
                 </div>
-                <div id="text-start-time" class="font-mono-num text-sm sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">00:54.0</div>
-                <div class="flex gap-0.5 sm:gap-1">
+                <div id="text-start-time" class="font-mono-num text-base sm:text-xl font-black text-slate-900 my-1">00:54.0</div>
+                <div class="flex gap-0.5 sm:gap-1 mt-1">
                   <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-1 py-0.5" data-action="start-dec-1">-1s</button>
                   <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="start-dec-01">-0.1s</button>
                   <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="start-inc-01">+0.1s</button>
@@ -316,15 +316,15 @@ function renderApp() {
               </div>
 
               <!-- 終點控制 -->
-              <div class="rf-inner-card p-2 sm:p-3 bg-[#ffffff]">
-                <div class="flex items-center justify-between mb-0.5 sm:mb-1">
-                  <span class="text-[11px] sm:text-xs font-bold text-amber-500 flex items-center gap-1">
+              <div class="rf-inner-card p-3 sm:p-3.5 bg-white flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-bold text-amber-500 flex items-center gap-1">
                     ${SVGS.endDiamond}
                     <span class="font-black">END</span> <span class="hidden sm:inline text-slate-400 font-normal text-[11px]">終點</span>
                   </span>
                 </div>
-                <div id="text-end-time" class="font-mono-num text-sm sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">01:24.3</div>
-                <div class="flex gap-0.5 sm:gap-1">
+                <div id="text-end-time" class="font-mono-num text-base sm:text-xl font-black text-slate-900 my-1">01:24.3</div>
+                <div class="flex gap-0.5 sm:gap-1 mt-1">
                   <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-1 py-0.5" data-action="end-dec-1">-1s</button>
                   <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="end-dec-01">-0.1s</button>
                   <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="end-inc-01">+0.1s</button>
@@ -333,22 +333,22 @@ function renderApp() {
               </div>
 
               <!-- 持續時間與合規狀態 -->
-              <div class="rf-inner-card p-2 sm:p-3 bg-[#ffffff] flex flex-col justify-between">
+              <div class="rf-inner-card p-3 sm:p-3.5 bg-white flex flex-col justify-between">
                 <div class="flex items-center justify-between">
-                  <span class="text-[10px] sm:text-xs font-bold text-slate-500">持續時間</span>
-                  <span id="badge-legal" class="text-[9px] sm:text-[10px] font-mono-num px-1.5 sm:px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center gap-0.5">
+                  <span class="text-[11px] sm:text-xs font-bold text-slate-500">持續時間</span>
+                  <span id="badge-legal" class="text-[9px] sm:text-[10px] font-mono-num px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center gap-0.5">
                     ${SVGS.check}
                     <span>符合需求</span>
                   </span>
                 </div>
-                <div class="flex items-baseline justify-between my-0.5 sm:my-1">
-                  <div id="text-duration-len" class="font-mono-num text-base sm:text-2xl font-black text-orange-600">30.3 秒</div>
-                  <button id="btn-mark-important" class="text-[9px] sm:text-[10px] text-amber-800 bg-[#fef3c7] hover:bg-[#fde68a] border border-[#fde68a] px-1.5 sm:px-2 py-0.5 rounded-full font-medium transition-colors flex items-center gap-1">
+                <div class="flex items-baseline justify-between my-1">
+                  <div id="text-duration-len" class="font-mono-num text-lg sm:text-2xl font-black text-orange-600">30.3 秒</div>
+                  <button id="btn-mark-important" class="text-[10px] text-amber-800 bg-[#fef3c7] hover:bg-[#fde68a] border border-[#fde68a] px-2 py-0.5 rounded-full font-medium transition-colors flex items-center gap-1">
                     ${SVGS.plus}
                     <span>標記重要點</span>
                   </button>
                 </div>
-                <div class="flex items-center justify-between pt-0.5 sm:pt-1 border-t border-slate-100 text-[9px] sm:text-[11px] text-slate-500 font-mono-num">
+                <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-[10px] sm:text-[11px] text-slate-500 font-mono-num">
                   <span class="flex items-center gap-1 text-amber-600 font-medium">
                     ${SVGS.zap}
                     <span>標記進度</span>
@@ -359,21 +359,21 @@ function renderApp() {
             </div>
 
             <!-- 4. 操作與下載列 -->
-            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-3 border-t border-[#f0e8dc] items-stretch sm:items-center">
+            <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-[#f0e8dc] items-stretch sm:items-center">
               <!-- 分享到 iPhone 按鈕 -->
-              <button id="btn-share-ios" class="rf-btn-orange-gradient flex-1 py-2.5 sm:py-3 px-4 text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20 flex items-center justify-center gap-2">
+              <button id="btn-share-ios" class="rf-btn-orange-gradient flex-1 py-3 px-5 text-sm font-bold shadow-md shadow-orange-500/20 flex items-center justify-center gap-2.5">
                 ${SVGS.garageBandBadge}
                 <span>分享到 iPhone 轉錄（GarageBand 專用）</span>
               </button>
 
               <!-- 下載組合按鈕 -->
               <div class="flex items-center justify-center gap-1 shrink-0">
-                <button id="btn-download-m4a" class="rf-btn-white-pill py-2.5 px-3.5 text-xs font-bold flex items-center gap-1.5">
+                <button id="btn-download-m4a" class="rf-btn-white-pill py-3 px-4 text-xs font-bold flex items-center gap-1.5 shadow-xs">
                   ${SVGS.download}
                   <span>下載</span>
                 </button>
                 <div class="relative inline-block">
-                  <select id="select-download-format" class="rf-btn-white-pill py-2.5 pl-2.5 pr-6 text-xs font-bold appearance-none cursor-pointer bg-white min-w-[62px]">
+                  <select id="select-download-format" class="rf-btn-white-pill py-3 pl-3 pr-6 text-xs font-bold appearance-none cursor-pointer bg-white min-w-[66px] shadow-xs">
                     <option value="m4a" selected>.m4a</option>
                     <option value="m4r">.m4r</option>
                     <option value="wav">.wav</option>
@@ -388,50 +388,50 @@ function renderApp() {
 
         <!-- ==================== 右側：AI Agent 智能對話助手 (佔 5 欄) ==================== -->
         <section class="lg:col-span-5 flex flex-col gap-4">
-          <div class="rf-panel-card p-4 sm:p-5 bg-white flex flex-col h-[560px] lg:h-[625px]">
+          <div class="rf-panel-card p-5 sm:p-6 bg-white flex flex-col h-[580px] lg:h-[645px]">
             
             <!-- Agent 頂部標題列 -->
-            <div class="flex items-center justify-between pb-3 border-b border-[#eee5da] mb-3">
-              <div class="flex items-center gap-2.5">
+            <div class="flex items-center justify-between pb-3.5 border-b border-[#eee5da] mb-3.5">
+              <div class="flex items-center gap-3">
                 ${SVGS.robotAvatar}
                 <div>
-                  <div class="flex items-center gap-1.5">
-                    <h3 class="text-xs sm:text-sm font-bold text-slate-900">AI Agent 智能對話助手</h3>
-                    <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-emerald-600 font-medium">
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-slate-900">AI Agent 智能對話助手</h3>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                       在線
                     </span>
                   </div>
-                  <p class="text-[10px] sm:text-[11px] text-slate-400">基於最新模型，提供專業的語音內容分析與處理建議</p>
+                  <p class="text-[11px] text-slate-400 mt-0.5">基於最新模型，提供專業的語音內容分析與處理建議</p>
                 </div>
               </div>
               
-              <button id="btn-quick-analyze" class="rf-btn-white-pill text-[10px] sm:text-[11px] px-2.5 py-1 font-medium shadow-none hover:shadow-xs shrink-0 flex items-center gap-1">
+              <button id="btn-quick-analyze" class="rf-btn-white-pill text-xs px-3 py-1.5 font-medium shadow-none hover:shadow-xs shrink-0 flex items-center gap-1.5">
                 ${SVGS.sliders}
                 <span>一般分析預設</span>
               </button>
             </div>
 
-            <!-- 對話與訊息滾動區 -->
-            <div id="chat-container" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
+            <!-- 對話與訊息滾動區 (帶有精緻邊界與行距) -->
+            <div id="chat-container" class="flex-1 overflow-y-auto space-y-3.5 pr-1.5 text-xs">
               <!-- 訊息由 JS 動態生成 -->
             </div>
 
             <!-- 底部 AI 輸入列 -->
-            <form id="chat-form" class="mt-2.5 pt-2.5 border-t border-[#eee5da] flex items-center gap-2">
-              <div class="relative flex-1 flex items-center">
-                <span class="absolute left-3 select-none flex items-center">${SVGS.sparkles}</span>
+            <form id="chat-form" class="mt-3 pt-3 border-t border-[#eee5da] flex items-center gap-2.5">
+              <div class="relative flex-1 flex items-center h-[46px] bg-[#faf7f2] border border-[#dfd5c7] rounded-full px-3.5 focus-within:border-orange-500 focus-within:ring-1 focus-within:ring-orange-400/30 transition-all">
+                <span class="select-none flex items-center mr-2">${SVGS.sparkles}</span>
                 <input
                   id="chat-input"
                   type="text"
                   maxlength="2000"
                   placeholder="輸入 AI 指令，例如：「幫我分析這段語音的重點」、「生成逐字稿」或「摘要內容」"
-                  class="w-full bg-[#faf7f2] border border-[#dfd5c7] rounded-full pl-8.5 pr-14 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-orange-400 font-medium transition-colors"
+                  class="flex-1 bg-transparent border-none outline-none text-xs text-slate-800 placeholder:text-slate-400 font-medium"
                 />
-                <span id="char-counter" class="absolute right-3 text-[10px] text-slate-400 font-mono-num select-none">0/2000</span>
+                <span id="char-counter" class="text-[10px] text-slate-400 font-mono-num select-none ml-2">0/2000</span>
               </div>
               
-              <button type="submit" class="w-8 h-8 rounded-full bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/20 transition-all" title="發送指令">
+              <button type="submit" class="w-9 h-9 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 hover:scale-105 active:scale-95 text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/25 transition-all" title="發送指令">
                 ${SVGS.send}
               </button>
             </form>
@@ -513,56 +513,56 @@ function renderChatMessages() {
     const textDiv = document.createElement("div");
     if (isUser && msg.choruses && msg.choruses.length > 0) {
       //黃底片段列表卡片
-      textDiv.className = "chat-bubble-segment p-3 sm:p-3.5 leading-relaxed text-slate-800 w-full";
+      textDiv.className = "chat-bubble-segment p-3.5 sm:p-4 leading-relaxed text-slate-800 w-full";
       textDiv.innerHTML = `
-        <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-amber-300/60 text-xs font-bold text-amber-900">
+        <div class="flex items-center justify-between pb-2 mb-2 border-b border-amber-300/60 text-xs font-bold text-amber-900">
           <span>${msg.content}</span>
           ${SVGS.copy}
         </div>
         <div class="space-y-1.5 font-mono-num text-[11px]">
           ${msg.choruses.map(ch => `
-            <div class="flex items-center justify-between text-slate-800 hover:text-orange-700 cursor-pointer btn-apply-chorus" data-start="${ch.startSec}" data-end="${ch.endSec}">
+            <div class="flex items-center justify-between text-slate-800 hover:text-orange-700 cursor-pointer btn-apply-chorus py-0.5" data-start="${ch.startSec}" data-end="${ch.endSec}">
               <span>${ch.name} : ${formatTime(ch.startSec)} - ${formatTime(ch.endSec)} <span class="text-slate-500">(${(ch.endSec - ch.startSec).toFixed(1)}s)</span></span>
               ${ch.tag ? `<span class="text-[10px] text-amber-800 font-bold ml-1">【標籤 : ${ch.tag}】</span>` : ""}
             </div>
           `).join("")}
         </div>
-        <div class="text-right text-[10px] text-amber-800/80 mt-1 font-mono-num">${msg.timeStr || "01:28"}</div>
+        <div class="text-right text-[10px] text-amber-800/80 mt-2 font-mono-num">${msg.timeStr || "01:28"}</div>
       `;
     } else if (isUser) {
-      textDiv.className = "chat-bubble-user px-3.5 py-2.5 text-slate-800 leading-relaxed";
+      textDiv.className = "chat-bubble-user px-4 py-3 text-[13px] leading-[1.65] text-slate-800";
       textDiv.innerHTML = `
-        <div class="flex items-center gap-1.5">
+        <div class="flex items-center gap-2">
           <span>${msg.content}</span>
           ${SVGS.copy}
         </div>
-        <div class="text-right text-[10px] text-amber-800/70 mt-1 font-mono-num">${msg.timeStr || "01:24"}</div>
+        <div class="text-right text-[10px] text-amber-800/70 mt-1.5 font-mono-num">${msg.timeStr || "01:24"}</div>
       `;
     } else {
-      textDiv.className = "chat-bubble-bot p-3 sm:p-3.5 leading-relaxed text-slate-700";
+      textDiv.className = "chat-bubble-bot p-4 text-[13px] leading-[1.65] text-slate-700";
       textDiv.style.whiteSpace = "pre-line";
       textDiv.textContent = msg.content;
 
       //如果有統計卡片，內嵌在對話氣泡內
       if (msg.summaryCard) {
         const summaryCard = document.createElement("div");
-        summaryCard.className = "mt-2 bg-[#ffffff] border border-[#e8ded2] rounded-xl p-2.5";
+        summaryCard.className = "mt-2.5 bg-[#ffffff] border border-[#ece4d8] rounded-xl p-3 shadow-xs";
         summaryCard.innerHTML = `
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="w-6 h-6 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                   <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                   <line x1="12" y1="19" x2="12" y2="22"/>
                 </svg>
               </div>
               <div>
-                <h4 class="font-bold text-slate-800 text-[11px]">${msg.summaryCard.title}</h4>
-                <p class="text-[10px] text-slate-400">${msg.summaryCard.description}</p>
+                <h4 class="font-bold text-slate-800 text-xs">${msg.summaryCard.title}</h4>
+                <p class="text-[11px] text-slate-400 mt-0.5">${msg.summaryCard.description}</p>
               </div>
             </div>
-            <button class="rf-btn-white-pill text-[10px] px-2 py-0.5 font-medium btn-apply-chorus shrink-0" data-start="84.3" data-end="117.5">
+            <button class="rf-btn-white-pill text-[10px] px-2.5 py-1 font-semibold btn-apply-chorus shrink-0" data-start="84.3" data-end="117.5">
               ${msg.summaryCard.badge}
             </button>
           </div>
@@ -571,7 +571,7 @@ function renderChatMessages() {
       }
 
       const timeDiv = document.createElement("div");
-      timeDiv.className = "text-right text-[10px] text-slate-400 mt-1 font-mono-num";
+      timeDiv.className = "text-right text-[10px] text-slate-400 mt-1.5 font-mono-num";
       timeDiv.textContent = msg.timeStr || "01:24";
       textDiv.appendChild(timeDiv);
     }
@@ -621,13 +621,13 @@ function bindEvents() {
     textDurationLen.textContent = `${len.toFixed(1)} 秒`;
 
     if (len <= 40) {
-      textDurationLen.className = "font-mono-num text-base sm:text-2xl font-black text-orange-600";
+      textDurationLen.className = "font-mono-num text-lg sm:text-2xl font-black text-orange-600";
       badgeLegal.innerHTML = `${SVGS.check}<span>符合需求</span>`;
-      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono-num px-1.5 sm:px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center gap-0.5";
+      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono-num px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center gap-0.5";
     } else {
-      textDurationLen.className = "font-mono-num text-base sm:text-2xl font-black text-red-500";
+      textDurationLen.className = "font-mono-num text-lg sm:text-2xl font-black text-red-500";
       badgeLegal.textContent = "⚠ 超過 40 秒";
-      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono-num px-1.5 sm:px-2 py-0.2 rounded-full bg-red-100 text-red-600 font-bold";
+      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono-num px-2 py-0.5 rounded-full bg-red-100 text-red-600 font-bold";
     }
   };
 
@@ -728,7 +728,7 @@ function bindEvents() {
     if (songTitleDisplay) songTitleDisplay.textContent = currentSongTitle;
     if (badgeFileStatus) {
       badgeFileStatus.textContent = "已載入";
-      badgeFileStatus.className = "text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium border border-emerald-200";
+      badgeFileStatus.className = "text-xs px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium border border-emerald-200";
     }
 
     if (loadingOverlay) loadingOverlay.classList.remove("hidden");
@@ -808,7 +808,7 @@ function bindEvents() {
 
       if (badgeFileStatus) {
         badgeFileStatus.textContent = "已載入";
-        badgeFileStatus.className = "text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium border border-emerald-200";
+        badgeFileStatus.className = "text-xs px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium border border-emerald-200";
       }
 
       if (songMetaDisplay) {
