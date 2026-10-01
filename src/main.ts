@@ -17,6 +17,138 @@ function formatTime(seconds: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}.${ms}`;
 }
 
+// 頂級像素級乾淨向量圖標庫 (徹底淘汰低質感 Emoji)
+const SVGS = {
+  logo: `
+    <svg class="w-7 h-7 text-orange-500" viewBox="0 0 28 28" fill="none">
+      <path d="M3 12v4M7 8v12M11 4v20M15 9v10M19 6v16M23 11v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `,
+  book: `
+    <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+      <path d="M6 6h10M6 10h10"/>
+    </svg>
+  `,
+  audioDoc: `
+    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <path d="M9 15v2M12 13v6M15 14v4"/>
+    </svg>
+  `,
+  cloudUpload: `
+    <svg class="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+      <path d="M12 12v9"/>
+      <path d="m8 16 4-4 4 4"/>
+    </svg>
+  `,
+  folder: `
+    <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>
+    </svg>
+  `,
+  play: `
+    <svg class="w-4.5 h-4.5 text-white fill-current ml-0.5" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+  `,
+  pause: `
+    <svg class="w-4.5 h-4.5 text-white fill-current" viewBox="0 0 24 24">
+      <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+    </svg>
+  `,
+  pencil: `
+    <svg class="w-3.5 h-3.5 text-slate-400 hover:text-orange-500 transition-colors cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+      <path d="m15 5 4 4"/>
+    </svg>
+  `,
+  startTriangle: `
+    <svg class="w-3 h-3 text-red-500 fill-current" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z"/>
+    </svg>
+  `,
+  endDiamond: `
+    <svg class="w-3 h-3 text-amber-500 fill-current" viewBox="0 0 24 24">
+      <path d="M12 2L2 12l10 10 10-10z"/>
+    </svg>
+  `,
+  check: `
+    <svg class="w-3 h-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  `,
+  plus: `
+    <svg class="w-3 h-3 text-amber-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  `,
+  zap: `
+    <svg class="w-3 h-3 text-amber-600 fill-current" viewBox="0 0 24 24">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+  `,
+  garageBandBadge: `
+    <div class="w-4.5 h-4.5 rounded-sm bg-white/20 p-0.5 grid grid-cols-2 gap-0.5 shrink-0">
+      <div class="bg-amber-300 rounded-[1px]"></div>
+      <div class="bg-sky-300 rounded-[1px]"></div>
+      <div class="bg-emerald-300 rounded-[1px]"></div>
+      <div class="bg-rose-300 rounded-[1px]"></div>
+    </div>
+  `,
+  download: `
+    <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  `,
+  robotAvatar: `
+    <div class="w-8.5 h-8.5 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-xs shrink-0">
+      <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="10" rx="2"/>
+        <circle cx="12" cy="5" r="2"/>
+        <path d="M12 7v4"/>
+        <line x1="8" y1="16" x2="8.01" y2="16" stroke-width="2.5"/>
+        <line x1="16" y1="16" x2="16.01" y2="16" stroke-width="2.5"/>
+      </svg>
+    </div>
+  `,
+  sliders: `
+    <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="21" x2="4" y2="14"/>
+      <line x1="4" y1="10" x2="4" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12" y2="3"/>
+      <line x1="20" y1="21" x2="20" y2="16"/>
+      <line x1="20" y1="12" x2="20" y2="3"/>
+      <line x1="1" y1="14" x2="7" y2="14"/>
+      <line x1="9" y1="8" x2="15" y2="8"/>
+      <line x1="17" y1="16" x2="23" y2="16"/>
+    </svg>
+  `,
+  copy: `
+    <svg class="w-3.5 h-3.5 text-amber-700 hover:text-amber-900 transition-colors cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </svg>
+  `,
+  sparkles: `
+    <svg class="w-4 h-4 text-amber-500 fill-current" viewBox="0 0 24 24">
+      <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/>
+    </svg>
+  `,
+  send: `
+    <svg class="w-4 h-4 text-white ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 2L11 13"/>
+      <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+    </svg>
+  `
+};
+
 function renderApp() {
   const app = document.getElementById("app");
   if (!app) return;
@@ -28,15 +160,8 @@ function renderApp() {
         <header class="bg-white border border-[#e8ded2] rounded-2xl px-4 sm:px-6 py-3 sm:py-3.5 flex items-center justify-between shadow-xs">
           <!-- Logo (橘色音波 + RINGFLOW) -->
           <div class="flex items-center gap-2.5 sm:gap-3">
-            <div class="flex items-center justify-center text-orange-500">
-              <svg class="w-6 h-6 sm:w-7 sm:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 10v4" />
-                <path d="M6 5v14" />
-                <path d="M10 2v20" />
-                <path d="M14 7v10" />
-                <path d="M18 4v16" />
-                <path d="M22 10v4" />
-              </svg>
+            <div class="flex items-center justify-center">
+              ${SVGS.logo}
             </div>
             <span class="font-black text-lg sm:text-xl tracking-wider text-slate-900 select-none">
               RINGFLOW
@@ -44,8 +169,9 @@ function renderApp() {
           </div>
 
           <!-- 鈴聲教學快速入口按鈕 -->
-          <button id="btn-open-guide" class="rf-btn-white-pill text-xs px-3 sm:px-3.5 py-1.5 font-medium shadow-none hover:shadow-xs">
-            <span>📘 鈴聲匯入教學</span>
+          <button id="btn-open-guide" class="rf-btn-white-pill text-xs px-3 sm:px-3.5 py-1.5 font-medium shadow-none hover:shadow-xs flex items-center gap-1.5">
+            ${SVGS.book}
+            <span>鈴聲匯入教學</span>
           </button>
         </header>
       </div>
@@ -62,9 +188,7 @@ function renderApp() {
               <div class="flex items-center gap-3">
                 <!-- 橙黃色圓角圖標 -->
                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-400 flex items-center justify-center text-white shadow-xs shrink-0">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
-                  </svg>
+                  ${SVGS.audioDoc}
                 </div>
                 <div>
                   <h2 class="text-sm sm:text-[15px] font-bold text-slate-800 leading-tight">語音檔案處理</h2>
@@ -74,7 +198,7 @@ function renderApp() {
 
               <!-- 右側標籤 No. 3 與 等待處理 -->
               <div class="flex items-center gap-1.5 sm:gap-2">
-                <span id="badge-file-no" class="text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 font-mono font-medium border border-slate-200">
+                <span id="badge-file-no" class="text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 font-mono-num font-medium border border-slate-200">
                   No. 3
                 </span>
                 <span id="badge-file-status" class="text-[10px] sm:text-[11px] px-2.5 sm:px-3 py-0.5 rounded-full bg-[#fef3c7] text-[#b45309] font-medium border border-[#fde68a]">
@@ -91,10 +215,8 @@ function renderApp() {
               <input id="input-file" type="file" accept="audio/*" class="hidden" />
               
               <div class="flex items-center gap-3 text-left">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-orange-100/80 text-orange-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  ${SVGS.cloudUpload}
                 </div>
                 <div>
                   <p class="text-xs sm:text-[13px] font-bold text-slate-700 group-hover:text-orange-600 transition-colors">
@@ -104,8 +226,9 @@ function renderApp() {
                 </div>
               </div>
 
-              <button type="button" class="rf-btn-white-pill px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap pointer-events-none shrink-0">
-                <span>📁 選擇檔案</span>
+              <button type="button" class="rf-btn-white-pill px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap pointer-events-none shrink-0 flex items-center gap-1.5">
+                ${SVGS.folder}
+                <span>選擇檔案</span>
               </button>
             </div>
 
@@ -115,7 +238,7 @@ function renderApp() {
                 id="input-youtube"
                 type="text"
                 placeholder="貼上 YouTube 影片網址或音訊串流連結 (例如 https://youtu.be/...)"
-                class="flex-1 bg-white border border-[#e2d8cd] rounded-lg px-3 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-orange-400 font-mono transition-colors"
+                class="flex-1 bg-white border border-[#e2d8cd] rounded-lg px-3 py-1.5 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-orange-400 font-mono-num transition-colors"
               />
               <button id="btn-load-youtube" class="rf-btn-white-pill text-xs px-3 py-1.5 whitespace-nowrap font-medium">
                 <span>解析載入</span>
@@ -135,7 +258,7 @@ function renderApp() {
                   class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-orange-500/30 hover:scale-105 active:scale-95 transition-transform shrink-0"
                   title="播放/暫停"
                 >
-                  <span id="play-icon" class="text-base sm:text-lg ml-0.5">▶</span>
+                  <span id="play-icon">${SVGS.play}</span>
                 </button>
 
                 <div>
@@ -143,11 +266,11 @@ function renderApp() {
                     <h3 id="song-title-display" class="font-bold text-sm sm:text-base text-slate-800 cursor-pointer hover:text-orange-600 transition-colors" title="點擊修改名稱">
                       試聽錄音檔
                     </h3>
-                    <button id="btn-edit-title" class="text-xs text-slate-400 hover:text-orange-600" title="修改名稱">
-                      ✏️
+                    <button id="btn-edit-title" title="修改名稱">
+                      ${SVGS.pencil}
                     </button>
                   </div>
-                  <p id="song-meta-display" class="text-[11px] sm:text-xs text-slate-400 font-mono mt-0.5">
+                  <p id="song-meta-display" class="text-[11px] sm:text-xs text-slate-400 font-mono-num mt-0.5">
                     MP3 · 3.2 MB · 04:02.7
                   </p>
                 </div>
@@ -155,8 +278,8 @@ function renderApp() {
 
               <!-- 時間碼顯示器 -->
               <div class="text-right">
-                <div class="text-[9px] sm:text-[10px] tracking-wider uppercase font-mono text-slate-400 font-semibold">PLAYHEAD TIMECODE</div>
-                <div id="playback-time" class="font-mono text-base sm:text-lg font-black text-amber-600 tracking-tight">
+                <div class="text-[9px] sm:text-[10px] tracking-wider uppercase font-mono-num text-slate-400 font-semibold">PLAYHEAD TIMECODE</div>
+                <div id="playback-time" class="font-mono-num text-base sm:text-lg font-black text-amber-600 tracking-tight">
                   01:04.0 <span class="text-slate-400 font-normal text-xs sm:text-sm">/ 04:02.7</span>
                 </div>
               </div>
@@ -168,7 +291,7 @@ function renderApp() {
               <div id="loading-overlay" class="absolute inset-0 bg-white/85 backdrop-blur-xs flex items-center justify-center text-xs text-orange-600 font-medium hidden">
                 <div class="flex items-center gap-2.5">
                   <span class="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></span>
-                  <span class="font-mono tracking-wide font-semibold">正在處理音訊波形...</span>
+                  <span class="font-mono-num tracking-wide font-semibold">正在處理音訊波形...</span>
                 </div>
               </div>
             </div>
@@ -179,15 +302,16 @@ function renderApp() {
               <div class="rf-inner-card p-2 sm:p-3 bg-[#ffffff]">
                 <div class="flex items-center justify-between mb-0.5 sm:mb-1">
                   <span class="text-[11px] sm:text-xs font-bold text-red-500 flex items-center gap-1">
-                    ▶ <span class="font-black">START</span> <span class="hidden sm:inline text-slate-400 font-normal text-[11px]">起點</span>
+                    ${SVGS.startTriangle}
+                    <span class="font-black">START</span> <span class="hidden sm:inline text-slate-400 font-normal text-[11px]">起點</span>
                   </span>
                 </div>
-                <div id="text-start-time" class="font-mono text-sm sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">00:54.0</div>
+                <div id="text-start-time" class="font-mono-num text-sm sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">00:54.0</div>
                 <div class="flex gap-0.5 sm:gap-1">
-                  <button class="rf-step-chip flex-1" data-action="start-dec-1">-1s</button>
-                  <button class="rf-step-chip flex-1" data-action="start-dec-01">-0.1s</button>
-                  <button class="rf-step-chip flex-1" data-action="start-inc-01">+0.1s</button>
-                  <button class="rf-step-chip flex-1" data-action="start-inc-1">+1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-1 py-0.5" data-action="start-dec-1">-1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="start-dec-01">-0.1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="start-inc-01">+0.1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-1 py-0.5" data-action="start-inc-1">+1s</button>
                 </div>
               </div>
 
@@ -195,15 +319,16 @@ function renderApp() {
               <div class="rf-inner-card p-2 sm:p-3 bg-[#ffffff]">
                 <div class="flex items-center justify-between mb-0.5 sm:mb-1">
                   <span class="text-[11px] sm:text-xs font-bold text-amber-500 flex items-center gap-1">
-                    ◆ <span class="font-black">END</span> <span class="hidden sm:inline text-slate-400 font-normal text-[11px]">終點</span>
+                    ${SVGS.endDiamond}
+                    <span class="font-black">END</span> <span class="hidden sm:inline text-slate-400 font-normal text-[11px]">終點</span>
                   </span>
                 </div>
-                <div id="text-end-time" class="font-mono text-sm sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">01:24.3</div>
+                <div id="text-end-time" class="font-mono-num text-sm sm:text-lg font-black text-slate-900 mb-1.5 sm:mb-2">01:24.3</div>
                 <div class="flex gap-0.5 sm:gap-1">
-                  <button class="rf-step-chip flex-1" data-action="end-dec-1">-1s</button>
-                  <button class="rf-step-chip flex-1" data-action="end-dec-01">-0.1s</button>
-                  <button class="rf-step-chip flex-1" data-action="end-inc-01">+0.1s</button>
-                  <button class="rf-step-chip flex-1" data-action="end-inc-1">+1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-1 py-0.5" data-action="end-dec-1">-1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="end-dec-01">-0.1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-0.5 py-0.5" data-action="end-inc-01">+0.1s</button>
+                  <button class="rf-step-chip flex-1 text-[10px] sm:text-[11px] !px-1 py-0.5" data-action="end-inc-1">+1s</button>
                 </div>
               </div>
 
@@ -211,18 +336,23 @@ function renderApp() {
               <div class="rf-inner-card p-2 sm:p-3 bg-[#ffffff] flex flex-col justify-between">
                 <div class="flex items-center justify-between">
                   <span class="text-[10px] sm:text-xs font-bold text-slate-500">持續時間</span>
-                  <span id="badge-legal" class="text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700 font-bold">
-                    ✓ 符合需求
+                  <span id="badge-legal" class="text-[9px] sm:text-[10px] font-mono-num px-1.5 sm:px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center gap-0.5">
+                    ${SVGS.check}
+                    <span>符合需求</span>
                   </span>
                 </div>
                 <div class="flex items-baseline justify-between my-0.5 sm:my-1">
-                  <div id="text-duration-len" class="font-mono text-base sm:text-2xl font-black text-orange-600">30.3 秒</div>
-                  <button id="btn-mark-important" class="text-[9px] sm:text-[10px] text-amber-800 bg-[#fef3c7] hover:bg-[#fde68a] border border-[#fde68a] px-1.5 sm:px-2 py-0.5 rounded-full font-medium transition-colors">
-                    + 標記重要點
+                  <div id="text-duration-len" class="font-mono-num text-base sm:text-2xl font-black text-orange-600">30.3 秒</div>
+                  <button id="btn-mark-important" class="text-[9px] sm:text-[10px] text-amber-800 bg-[#fef3c7] hover:bg-[#fde68a] border border-[#fde68a] px-1.5 sm:px-2 py-0.5 rounded-full font-medium transition-colors flex items-center gap-1">
+                    ${SVGS.plus}
+                    <span>標記重要點</span>
                   </button>
                 </div>
-                <div class="flex items-center justify-between pt-0.5 sm:pt-1 border-t border-slate-100 text-[9px] sm:text-[11px] text-slate-500 font-mono">
-                  <span class="flex items-center gap-0.5 text-amber-600 font-medium">⚡ 標記進度</span>
+                <div class="flex items-center justify-between pt-0.5 sm:pt-1 border-t border-slate-100 text-[9px] sm:text-[11px] text-slate-500 font-mono-num">
+                  <span class="flex items-center gap-1 text-amber-600 font-medium">
+                    ${SVGS.zap}
+                    <span>標記進度</span>
+                  </span>
                   <button id="btn-lock-golden" class="text-slate-600 hover:text-orange-600 font-bold">29.5s</button>
                 </div>
               </div>
@@ -231,15 +361,16 @@ function renderApp() {
             <!-- 4. 操作與下載列 -->
             <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-3 border-t border-[#f0e8dc] items-stretch sm:items-center">
               <!-- 分享到 iPhone 按鈕 -->
-              <button id="btn-share-ios" class="rf-btn-orange-gradient flex-1 py-2.5 sm:py-3 px-4 text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20">
-                <span class="text-base">🎛️</span>
+              <button id="btn-share-ios" class="rf-btn-orange-gradient flex-1 py-2.5 sm:py-3 px-4 text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20 flex items-center justify-center gap-2">
+                ${SVGS.garageBandBadge}
                 <span>分享到 iPhone 轉錄（GarageBand 專用）</span>
               </button>
 
               <!-- 下載組合按鈕 -->
               <div class="flex items-center justify-center gap-1 shrink-0">
-                <button id="btn-download-m4a" class="rf-btn-white-pill py-2.5 px-3.5 text-xs font-bold">
-                  <span>📥 下載</span>
+                <button id="btn-download-m4a" class="rf-btn-white-pill py-2.5 px-3.5 text-xs font-bold flex items-center gap-1.5">
+                  ${SVGS.download}
+                  <span>下載</span>
                 </button>
                 <div class="relative inline-block">
                   <select id="select-download-format" class="rf-btn-white-pill py-2.5 pl-2.5 pr-6 text-xs font-bold appearance-none cursor-pointer bg-white min-w-[62px]">
@@ -262,16 +393,7 @@ function renderApp() {
             <!-- Agent 頂部標題列 -->
             <div class="flex items-center justify-between pb-3 border-b border-[#eee5da] mb-3">
               <div class="flex items-center gap-2.5">
-                <!-- 黑色圓形機器人圖標 -->
-                <div class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-slate-900 flex items-center justify-center text-white shadow-xs shrink-0">
-                  <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="10" rx="2" />
-                    <circle cx="12" cy="5" r="2" />
-                    <path d="M12 7v4" />
-                    <line x1="8" y1="16" x2="8.01" y2="16" stroke-width="2.5" stroke-linecap="round" />
-                    <line x1="16" y1="16" x2="16.01" y2="16" stroke-width="2.5" stroke-linecap="round" />
-                  </svg>
-                </div>
+                ${SVGS.robotAvatar}
                 <div>
                   <div class="flex items-center gap-1.5">
                     <h3 class="text-xs sm:text-sm font-bold text-slate-900">AI Agent 智能對話助手</h3>
@@ -284,8 +406,9 @@ function renderApp() {
                 </div>
               </div>
               
-              <button id="btn-quick-analyze" class="rf-btn-white-pill text-[10px] sm:text-[11px] px-2.5 py-1 font-medium shadow-none hover:shadow-xs shrink-0">
-                <span>⚙️ 一般分析預設</span>
+              <button id="btn-quick-analyze" class="rf-btn-white-pill text-[10px] sm:text-[11px] px-2.5 py-1 font-medium shadow-none hover:shadow-xs shrink-0 flex items-center gap-1">
+                ${SVGS.sliders}
+                <span>一般分析預設</span>
               </button>
             </div>
 
@@ -297,7 +420,7 @@ function renderApp() {
             <!-- 底部 AI 輸入列 -->
             <form id="chat-form" class="mt-2.5 pt-2.5 border-t border-[#eee5da] flex items-center gap-2">
               <div class="relative flex-1 flex items-center">
-                <span class="absolute left-3 text-amber-500 text-sm select-none">✨</span>
+                <span class="absolute left-3 select-none flex items-center">${SVGS.sparkles}</span>
                 <input
                   id="chat-input"
                   type="text"
@@ -305,13 +428,11 @@ function renderApp() {
                   placeholder="輸入 AI 指令，例如：「幫我分析這段語音的重點」、「生成逐字稿」或「摘要內容」"
                   class="w-full bg-[#faf7f2] border border-[#dfd5c7] rounded-full pl-8.5 pr-14 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-orange-400 font-medium transition-colors"
                 />
-                <span id="char-counter" class="absolute right-3 text-[10px] text-slate-400 font-mono select-none">0/2000</span>
+                <span id="char-counter" class="absolute right-3 text-[10px] text-slate-400 font-mono-num select-none">0/2000</span>
               </div>
               
               <button type="submit" class="w-8 h-8 rounded-full bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/20 transition-all" title="發送指令">
-                <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                ${SVGS.send}
               </button>
             </form>
           </div>
@@ -334,15 +455,15 @@ function renderApp() {
 
         <div class="space-y-4 text-xs text-slate-600 leading-relaxed">
           <div class="flex gap-3 items-start">
-            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold font-mono flex items-center justify-center shrink-0">1</span>
+            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold font-mono-num flex items-center justify-center shrink-0">1</span>
             <p>點擊「<strong>分享到 iPhone 轉錄</strong>」，在 iOS 原生分享選單中點選「<strong>儲存到檔案</strong>」。</p>
           </div>
 
           <div class="flex gap-3 items-start">
-            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold font-mono flex items-center justify-center shrink-0">2</span>
+            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold font-mono-num flex items-center justify-center shrink-0">2</span>
             <div>
               <p>打開 iPhone 內建的 <strong>GarageBand（庫樂隊）</strong>：</p>
-              <ul class="list-disc list-inside text-slate-500 mt-1.5 space-y-1 font-mono">
+              <ul class="list-disc list-inside text-slate-500 mt-1.5 space-y-1 font-mono-num">
                 <li>新建「錄音機」軌道，點左上角切換為<strong>多軌檢視</strong></li>
                 <li>點右上角「+」將小節設為 30 秒（防止音訊被截斷）</li>
                 <li>點右上角<strong>套索（Loops）</strong>>「檔案」> 拖曳音訊至音軌</li>
@@ -351,7 +472,7 @@ function renderApp() {
           </div>
 
           <div class="flex gap-3 items-start">
-            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold font-mono flex items-center justify-center shrink-0">3</span>
+            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-600 font-bold font-mono-num flex items-center justify-center shrink-0">3</span>
             <p>點左上角「▼」返回「我的樂曲」，<strong>長按該專案</strong> > 點選「<strong>分享</strong>」> 選擇「<strong>鈴聲</strong>」輸出，即可一鍵套用為來電鈴聲！</p>
           </div>
         </div>
@@ -380,16 +501,9 @@ function renderChatMessages() {
 
     //機器人頭像 (僅助手訊息顯示)
     if (!isUser) {
-      const avatar = document.createElement("div");
-      avatar.className = "w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center text-white shrink-0 mt-0.5";
-      avatar.innerHTML = `
-        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="10" rx="2" />
-          <circle cx="12" cy="5" r="2" />
-          <path d="M12 7v4" />
-        </svg>
-      `;
-      bubbleWrapper.appendChild(avatar);
+      const avatarWrapper = document.createElement("div");
+      avatarWrapper.innerHTML = SVGS.robotAvatar;
+      bubbleWrapper.appendChild(avatarWrapper.firstElementChild as HTMLElement);
     }
 
     const contentWrapper = document.createElement("div");
@@ -403,9 +517,9 @@ function renderChatMessages() {
       textDiv.innerHTML = `
         <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-amber-300/60 text-xs font-bold text-amber-900">
           <span>${msg.content}</span>
-          <span class="text-xs text-amber-700 cursor-pointer hover:text-amber-900" title="複製標記片段">📋</span>
+          ${SVGS.copy}
         </div>
-        <div class="space-y-1.5 font-mono text-[11px]">
+        <div class="space-y-1.5 font-mono-num text-[11px]">
           ${msg.choruses.map(ch => `
             <div class="flex items-center justify-between text-slate-800 hover:text-orange-700 cursor-pointer btn-apply-chorus" data-start="${ch.startSec}" data-end="${ch.endSec}">
               <span>${ch.name} : ${formatTime(ch.startSec)} - ${formatTime(ch.endSec)} <span class="text-slate-500">(${(ch.endSec - ch.startSec).toFixed(1)}s)</span></span>
@@ -413,16 +527,16 @@ function renderChatMessages() {
             </div>
           `).join("")}
         </div>
-        <div class="text-right text-[10px] text-amber-800/80 mt-1 font-mono">${msg.timeStr || "01:28"}</div>
+        <div class="text-right text-[10px] text-amber-800/80 mt-1 font-mono-num">${msg.timeStr || "01:28"}</div>
       `;
     } else if (isUser) {
       textDiv.className = "chat-bubble-user px-3.5 py-2.5 text-slate-800 leading-relaxed";
       textDiv.innerHTML = `
         <div class="flex items-center gap-1.5">
           <span>${msg.content}</span>
-          <span class="text-xs text-amber-700 cursor-pointer" title="複製內容">📋</span>
+          ${SVGS.copy}
         </div>
-        <div class="text-right text-[10px] text-amber-800/70 mt-1 font-mono">${msg.timeStr || "01:24"}</div>
+        <div class="text-right text-[10px] text-amber-800/70 mt-1 font-mono-num">${msg.timeStr || "01:24"}</div>
       `;
     } else {
       textDiv.className = "chat-bubble-bot p-3 sm:p-3.5 leading-relaxed text-slate-700";
@@ -437,8 +551,10 @@ function renderChatMessages() {
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <div class="w-6 h-6 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="22"/>
                 </svg>
               </div>
               <div>
@@ -455,7 +571,7 @@ function renderChatMessages() {
       }
 
       const timeDiv = document.createElement("div");
-      timeDiv.className = "text-right text-[10px] text-slate-400 mt-1 font-mono";
+      timeDiv.className = "text-right text-[10px] text-slate-400 mt-1 font-mono-num";
       timeDiv.textContent = msg.timeStr || "01:24";
       textDiv.appendChild(timeDiv);
     }
@@ -505,13 +621,13 @@ function bindEvents() {
     textDurationLen.textContent = `${len.toFixed(1)} 秒`;
 
     if (len <= 40) {
-      textDurationLen.className = "font-mono text-base sm:text-2xl font-black text-orange-600";
-      badgeLegal.textContent = "✓ 符合需求";
-      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700 font-bold";
+      textDurationLen.className = "font-mono-num text-base sm:text-2xl font-black text-orange-600";
+      badgeLegal.innerHTML = `${SVGS.check}<span>符合需求</span>`;
+      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono-num px-1.5 sm:px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center gap-0.5";
     } else {
-      textDurationLen.className = "font-mono text-base sm:text-2xl font-black text-red-500";
+      textDurationLen.className = "font-mono-num text-base sm:text-2xl font-black text-red-500";
       badgeLegal.textContent = "⚠ 超過 40 秒";
-      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono px-1.5 sm:px-2 py-0.2 rounded-full bg-red-100 text-red-600 font-bold";
+      badgeLegal.className = "text-[9px] sm:text-[10px] font-mono-num px-1.5 sm:px-2 py-0.2 rounded-full bg-red-100 text-red-600 font-bold";
     }
   };
 
@@ -534,7 +650,7 @@ function bindEvents() {
   };
 
   audioEngine.onStateChange = (isPlaying) => {
-    if (playIcon) playIcon.textContent = isPlaying ? "⏸" : "▶";
+    if (playIcon) playIcon.innerHTML = isPlaying ? SVGS.pause : SVGS.play;
   };
 
   btnPlayPause?.addEventListener("click", () => {
