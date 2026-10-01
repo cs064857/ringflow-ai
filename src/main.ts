@@ -18,6 +18,7 @@ class RingflowApp {
   private currentPlayhead = 64.0; // 01:04.0
   private isPlaying = false;
   private exportFormat = "m4a";
+  private isLoadingYoutube = false;
 
   //標記列表
   private markerCount = 3;
@@ -56,7 +57,7 @@ class RingflowApp {
     if (!app) return;
 
     app.innerHTML = `
-      <!-- 頂部導航列 (Top Navbar) -->
+      <!-- 頂部導航列 (Top Navbar) - 簡潔現代風格 -->
       <header class="bg-white border-b border-[#eee7db] px-4 md:px-8 py-3.5 sticky top-0 z-40 shadow-xs">
         <div class="max-w-[1680px] mx-auto flex items-center justify-between gap-4">
           <!-- 左側 Logo 與標題 -->
@@ -70,64 +71,6 @@ class RingflowApp {
                 <span class="text-xs font-semibold px-2 py-0.5 rounded-sm bg-slate-100 text-slate-500 border border-slate-200 uppercase tracking-wider">PRO STUDIO</span>
               </div>
             </div>
-
-            <!-- 中間導航頁籤 (Nav Tabs) -->
-            <nav class="hidden lg:flex items-center gap-1.5 ml-8 pl-4 border-l border-slate-200">
-              <a href="#" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold bg-white text-orange-600 shadow-xs border border-orange-200/80">
-                <svg class="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                </svg>
-                <span>首頁</span>
-              </a>
-              <a href="#" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
-                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <span>專案</span>
-              </a>
-              <a href="#" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
-                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                </svg>
-                <span>知識庫</span>
-              </a>
-              <a href="#" class="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
-                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-                <span>設定</span>
-              </a>
-            </nav>
-          </div>
-
-          <!-- 右側狀態按鈕與實驗室 -->
-          <div class="flex items-center gap-3">
-            <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-semibold">
-              <svg class="w-3.5 h-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
-              </svg>
-              <span>Cloudflare Edge</span>
-            </div>
-
-            <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer">
-              +
-            </button>
-
-            <!-- 智能語音實驗室下拉 -->
-            <button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer">
-              <div class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-xs">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <rect x="4" y="4" width="16" height="16" rx="2" />
-                  <rect x="9" y="9" width="6" height="6" />
-                </svg>
-              </div>
-              <span>智能語音實驗室</span>
-              <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </button>
           </div>
         </div>
       </header>
@@ -144,22 +87,57 @@ class RingflowApp {
             <div class="bg-white rounded-2xl border border-[#ece3d4] p-5 md:p-6 shadow-xs flex flex-col gap-5">
               
               <!-- 卡片頂部標頭 -->
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
                   <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-xs shrink-0">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     </svg>
                   </div>
-                  <div>
-                    <h2 class="text-lg font-black text-slate-800 tracking-tight">語音檔案處理</h2>
-                    <p class="text-xs text-slate-400 font-medium">支援多種格式（MP3、WAV、M4A、FLAC、AAC）</p>
+                  <div class="min-w-0">
+                    <h2 class="text-lg font-black text-slate-800 tracking-tight truncate">語音檔案處理</h2>
+                    <p class="text-xs text-slate-400 font-medium truncate">支援 YouTube 網址匯入、檔案上傳與即時音訊編輯</p>
                   </div>
                 </div>
 
+                <div class="flex items-center gap-2 shrink-0">
+                  <span id="badgeSongTitle" class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 border border-slate-200 truncate max-w-[140px] sm:max-w-[200px]" title="${this.audioFileName}">
+                    ${this.audioFileName}
+                  </span>
+                  <span class="px-3 py-1 text-xs font-bold rounded-md bg-amber-100/80 text-amber-700 border border-amber-200/80">
+                    準備就緒
+                  </span>
+                </div>
+              </div>
+
+              <!-- YouTube 網址快速匯入區 -->
+              <div class="bg-[#faf7f2] border border-[#ece3d4] rounded-xl p-3 md:p-3.5 flex flex-col gap-2">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
+                  <svg class="w-4 h-4 text-red-600 fill-red-600 shrink-0" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                  <span>從 YouTube 匯入音樂 / 語音</span>
+                </div>
+
                 <div class="flex items-center gap-2">
-                  <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-600 border border-slate-200">No. 3</span>
-                  <span class="px-3 py-1 text-xs font-bold rounded-md bg-amber-100/80 text-amber-700 border border-amber-200/80">等待處理</span>
+                  <div class="relative flex-1">
+                    <input
+                      type="text"
+                      id="inputYoutubeUrl"
+                      placeholder="貼上 YouTube 影片網址，例如：https://www.youtube.com/watch?v=..."
+                      class="w-full bg-white border border-slate-200 focus:border-orange-500 rounded-lg px-3 py-2 text-xs md:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-hidden transition-colors"
+                    />
+                  </div>
+                  <button
+                    id="btnLoadYoutube"
+                    class="px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 active:scale-95 text-white text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span id="btnYoutubeText">解析載入</span>
+                    <svg id="btnYoutubeSpinner" class="w-3.5 h-3.5 animate-spin hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                  </button>
                 </div>
               </div>
 
@@ -178,7 +156,7 @@ class RingflowApp {
                       點擊或拖曳音訊檔至此 <span class="text-slate-400 font-normal text-xs">(MP3, WAV, M4A, FLAC, AAC)</span>
                     </p>
                     <p class="text-[11px] text-slate-400 font-medium mt-0.5 truncate">
-                      支援檔案上傳 · Web Audio 錄製 · URL 連結匯入
+                      支援本機檔案上傳與即時波形解析
                     </p>
                   </div>
                 </div>
@@ -212,7 +190,7 @@ class RingflowApp {
 
                     <div class="min-w-0">
                       <div class="flex items-center gap-1.5">
-                        <span id="labelFileName" class="text-sm md:text-base font-bold text-slate-800 truncate">${this.audioFileName}</span>
+                        <span id="labelFileName" class="text-sm md:text-base font-bold text-slate-800 truncate max-w-[200px] md:max-w-[280px]" title="${this.audioFileName}">${this.audioFileName}</span>
                         <button id="btnEditName" class="text-slate-400 hover:text-slate-600 cursor-pointer shrink-0" title="編輯檔名">
                           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -221,7 +199,7 @@ class RingflowApp {
                         </button>
                       </div>
                       <p class="text-xs text-slate-400 font-mono-num font-medium truncate">
-                        ${this.audioFileType} · ${this.audioFileSize} · <span id="labelTotalDuration">04:02.7</span>
+                        <span id="labelFileType">${this.audioFileType}</span> · <span id="labelFileSize">${this.audioFileSize}</span> · <span id="labelTotalDuration">04:02.7</span>
                       </p>
                     </div>
                   </div>
@@ -360,74 +338,6 @@ class RingflowApp {
               </div>
             </div>
 
-            <!-- 底部 4 個快捷特色卡片 (Feature Quick Cards) -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <!-- 1. 語音轉文字 -->
-              <div class="feature-card bg-white rounded-xl border border-[#ece3d4] p-3 hover:border-purple-300 hover:shadow-xs transition-all cursor-pointer group" data-action="transcribe">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-purple-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-                      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-                    </svg>
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="text-xs font-bold text-slate-800 truncate">語音轉文字</h4>
-                    <p class="text-[10px] text-slate-400 font-medium truncate">高精度識別 · 支援多語言</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 2. AI 內容分析 -->
-              <div class="feature-card bg-white rounded-xl border border-[#ece3d4] p-3 hover:border-emerald-300 hover:shadow-xs transition-all cursor-pointer group" data-action="analyze">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M15 3h6v6"></path>
-                      <path d="M10 14 21 3"></path>
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    </svg>
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="text-xs font-bold text-slate-800 truncate">AI 內容分析</h4>
-                    <p class="text-[10px] text-slate-400 font-medium truncate">摘要 · 關鍵詞 · 情緒分析</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 3. 多語言支援 -->
-              <div class="feature-card bg-white rounded-xl border border-[#ece3d4] p-3 hover:border-blue-300 hover:shadow-xs transition-all cursor-pointer group" data-action="translate">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="2" y1="12" x2="22" y2="12"></line>
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="text-xs font-bold text-slate-800 truncate">多語言支援</h4>
-                    <p class="text-[10px] text-slate-400 font-medium truncate">支援 50+ 語言</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 4. 雲端同步 -->
-              <div class="feature-card bg-white rounded-xl border border-[#ece3d4] p-3 hover:border-amber-300 hover:shadow-xs transition-all cursor-pointer group" data-action="cloud">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
-                    </svg>
-                  </div>
-                  <div class="min-w-0">
-                    <h4 class="text-xs font-bold text-slate-800 truncate">雲端同步</h4>
-                    <p class="text-[10px] text-slate-400 font-medium truncate">安全 · 高效 · 穩定</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
 
           <!-- ========================================== -->
@@ -450,30 +360,15 @@ class RingflowApp {
                   </div>
                   <div>
                     <div class="flex items-center gap-2">
-                      <h3 class="text-sm md:text-base font-black text-slate-800 tracking-tight">AI Agent 智能對話助手</h3>
+                      <h3 class="text-sm md:text-base font-black text-slate-800 tracking-tight">AI Agent 智能副歌推薦助手</h3>
                       <span class="flex items-center gap-1 text-[11px] font-bold text-emerald-600">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
                         <span>在線</span>
                       </span>
                     </div>
-                    <p class="text-xs text-slate-400 font-medium">基於最新模型，提供專業的語音內容分析與處理建議</p>
+                    <p class="text-xs text-slate-400 font-medium">智慧偵測副歌與高潮，提供「即時試聽」與「一鍵套用」</p>
                   </div>
                 </div>
-
-                <button class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 text-xs font-semibold transition-colors cursor-pointer shrink-0">
-                  <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="4" y1="21" x2="4" y2="14"></line>
-                    <line x1="4" y1="10" x2="4" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12" y2="3"></line>
-                    <line x1="20" y1="21" x2="20" y2="16"></line>
-                    <line x1="20" y1="12" x2="20" y2="3"></line>
-                    <line x1="1" y1="14" x2="7" y2="14"></line>
-                    <line x1="9" y1="8" x2="15" y2="8"></line>
-                    <line x1="17" y1="16" x2="23" y2="16"></line>
-                  </svg>
-                  <span>一般分析預設</span>
-                </button>
               </div>
 
               <!-- 對話訊息列表 (滾動區域) -->
@@ -493,7 +388,7 @@ class RingflowApp {
                     </div>
 
                     <div class="flex-1">
-                      <textarea id="inputPrompt" rows="2" class="w-full bg-transparent border-0 resize-none text-xs md:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-hidden leading-relaxed" placeholder="輸入 AI 指令，例如：&#10;「幫我分析這段語音的重點」、「生成逐字稿」或「摘要內容」"></textarea>
+                      <textarea id="inputPrompt" rows="2" class="w-full bg-transparent border-0 resize-none text-xs md:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-hidden leading-relaxed" placeholder="輸入 AI 指令，例如：&#10;「幫我找出這首歌最嗨的副歌段落」、「推薦 30 秒鈴聲區間」"></textarea>
                     </div>
 
                     <!-- 右側發送按鈕 -->
@@ -552,12 +447,72 @@ class RingflowApp {
               </svg>
             </div>
             
-            <div class="flex-1 flex flex-col gap-2 max-w-[88%]">
+            <div class="flex-1 flex flex-col gap-2 max-w-[92%]">
               <div class="bg-white border border-[#ede6db] rounded-2xl rounded-tl-sm p-3.5 shadow-2xs text-xs md:text-sm text-slate-700 leading-relaxed">
                 <p class="whitespace-pre-line">${msg.content}</p>
 
-                ${msg.summaryCard ? `
-                  <!-- 統計卡片 -->
+                ${msg.choruses && msg.choruses.length > 0 ? `
+                  <div class="mt-3 flex flex-col gap-2">
+                    ${msg.choruses.map(c => `
+                      <div class="bg-[#faf6ee] rounded-xl p-3 border border-[#f0e6d8] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="flex items-start gap-2.5 min-w-0">
+                          <div class="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="6" cy="12" r="3"></circle>
+                              <circle cx="18" cy="12" r="3"></circle>
+                              <path d="M6 12h12"></path>
+                            </svg>
+                          </div>
+                          <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                              <h5 class="text-xs font-bold text-slate-800">${c.name}</h5>
+                              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-sm bg-orange-100 text-orange-700 border border-orange-200/80">
+                                ${c.tag || "副歌"}
+                              </span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 font-mono-num mt-0.5">
+                              ${this.formatTime(c.startSec)} - ${this.formatTime(c.endSec)} (${(c.endSec - c.startSec).toFixed(1)}秒)
+                            </p>
+                            ${c.description ? `<p class="text-[11px] text-slate-600 mt-1 leading-snug">${c.description}</p>` : ""}
+                          </div>
+                        </div>
+
+                        <!-- 兩個按鈕：試聽（不改變位置）與套用選區（改變位置） -->
+                        <div class="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+                          <!-- 1. 試聽按鈕（純播放片段，不改變左側選區） -->
+                          <button
+                            class="btn-preview-segment px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold shadow-2xs flex items-center gap-1 transition-colors cursor-pointer"
+                            data-start="${c.startSec}"
+                            data-end="${c.endSec}"
+                            data-name="${c.name}"
+                            title="僅播放此片段，不會變更目前編輯選區"
+                          >
+                            <svg class="w-3 h-3 text-orange-500 fill-orange-500" viewBox="0 0 24 24">
+                              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <span>試聽</span>
+                          </button>
+
+                          <!-- 2. 套用選區按鈕（改變目前選取的音頻位置） -->
+                          <button
+                            class="btn-apply-segment px-2.5 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-2xs flex items-center gap-1 transition-colors cursor-pointer"
+                            data-start="${c.startSec}"
+                            data-end="${c.endSec}"
+                            data-name="${c.name}"
+                            title="將此區間套用至左側編輯器選區"
+                          >
+                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                              <path d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>套用選區</span>
+                          </button>
+                        </div>
+                      </div>
+                    `).join("")}
+                  </div>
+                ` : ""}
+
+                ${msg.summaryCard && (!msg.choruses || msg.choruses.length === 0) ? `
                   <div class="mt-3 bg-[#faf6ee] rounded-xl p-3 border border-[#f0e6d8] flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2.5 min-w-0">
                       <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -573,9 +528,9 @@ class RingflowApp {
                       </div>
                     </div>
 
-                    <button class="btn-card-badge px-2.5 py-1 rounded-md bg-white border border-slate-200 text-slate-700 text-[11px] font-bold shadow-2xs hover:bg-slate-50 transition-colors shrink-0 cursor-pointer" data-badge-click="1">
+                    <span class="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-slate-700 text-[11px] font-bold shadow-2xs shrink-0">
                       ${msg.summaryCard.badge}
-                    </button>
+                    </span>
                   </div>
                 ` : ""}
               </div>
@@ -597,17 +552,6 @@ class RingflowApp {
                     </svg>
                   </button>
                 </div>
-
-                ${msg.choruses && msg.choruses.length > 0 ? `
-                  <div class="mt-2.5 pt-2 border-t border-amber-200/60 flex flex-col gap-1.5 font-mono-num text-[11px] font-medium text-amber-900">
-                    ${msg.choruses.map(c => `
-                      <div class="chorus-item-btn flex items-center justify-between p-1.5 rounded-lg hover:bg-amber-200/50 transition-colors cursor-pointer" data-start="${c.startSec}" data-end="${c.endSec}">
-                        <span>${c.name} : ${this.formatTime(c.startSec)} - ${this.formatTime(c.endSec)} (${(c.endSec - c.startSec).toFixed(1)}s)</span>
-                        <span class="text-amber-800 font-bold ml-2 shrink-0">【標籤：${c.tag || "重要"}】</span>
-                      </div>
-                    `).join("")}
-                  </div>
-                ` : ""}
               </div>
               <div class="text-[10px] text-slate-400 font-mono-num pr-1">${msg.timeStr || "01:28"}</div>
             </div>
@@ -619,20 +563,36 @@ class RingflowApp {
     chatContainer.innerHTML = html;
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    //綁定片段點擊事件，點擊後同步左側波形與時間
-    chatContainer.querySelectorAll(".chorus-item-btn").forEach((el) => {
-      el.addEventListener("click", () => {
-        const start = parseFloat(el.getAttribute("data-start") || "0");
-        const end = parseFloat(el.getAttribute("data-end") || "0");
+    // 1. 綁定「試聽」按鈕事件（純播放該片段區間，不改變左側選區狀態）
+    chatContainer.querySelectorAll<HTMLButtonElement>(".btn-preview-segment").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const start = parseFloat(btn.getAttribute("data-start") || "0");
+        const end = parseFloat(btn.getAttribute("data-end") || "0");
+        const name = btn.getAttribute("data-name") || "片段";
         if (start < end) {
-          this.viewer.setRange(start, end);
-          this.engine.seek(start);
-          this.showToast(`已同步選取區間：${this.formatTime(start)} - ${this.formatTime(end)}`);
+          //僅播放該片段區間，不修改 this.startSec / this.endSec，不更新 viewer 選區
+          this.engine.play(start, end);
+          this.showToast(`🎧 正在試聽【${name}】(${this.formatTime(start)} - ${this.formatTime(end)})`);
         }
       });
     });
 
-    //複製按鈕事件
+    // 2. 綁定「套用選區」按鈕事件（改變目前選取的音頻位置）
+    chatContainer.querySelectorAll<HTMLButtonElement>(".btn-apply-segment").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const start = parseFloat(btn.getAttribute("data-start") || "0");
+        const end = parseFloat(btn.getAttribute("data-end") || "0");
+        const name = btn.getAttribute("data-name") || "片段";
+        if (start < end) {
+          //改變選區
+          this.viewer.setRange(start, end);
+          this.engine.seek(start);
+          this.showToast(`✂️ 已將【${name}】套用至編輯器選區 (${this.formatTime(start)} - ${this.formatTime(end)})`);
+        }
+      });
+    });
+
+    // 3. 複製按鈕事件
     chatContainer.querySelectorAll(".btn-copy-msg").forEach((el) => {
       el.addEventListener("click", () => {
         this.showToast("已複製片段內容至剪貼簿");
@@ -681,7 +641,28 @@ class RingflowApp {
       }
     });
 
-    // 2. 檔案選取與拖放上傳
+    // 2. YouTube 網址載入
+    const inputYoutubeUrl = document.getElementById("inputYoutubeUrl") as HTMLInputElement;
+    const btnLoadYoutube = document.getElementById("btnLoadYoutube") as HTMLButtonElement;
+
+    const handleLoadYoutube = async () => {
+      const url = inputYoutubeUrl?.value.trim();
+      if (!url) {
+        this.showToast("請先輸入 YouTube 影片連結");
+        return;
+      }
+      await this.loadYoutubeAudio(url);
+    };
+
+    btnLoadYoutube?.addEventListener("click", handleLoadYoutube);
+    inputYoutubeUrl?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleLoadYoutube();
+      }
+    });
+
+    // 3. 檔案選取與拖放上傳
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
     const btnSelectFile = document.getElementById("btnSelectFile");
     const dropzone = document.getElementById("dropzone");
@@ -718,7 +699,7 @@ class RingflowApp {
       }
     });
 
-    // 3. 微調按鈕組 (Trim buttons)
+    // 4. 微調按鈕組 (Trim buttons)
     document.querySelectorAll<HTMLButtonElement>("[data-adjust-start]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const delta = parseFloat(btn.getAttribute("data-adjust-start") || "0");
@@ -733,45 +714,43 @@ class RingflowApp {
       });
     });
 
-    // 4. 編輯檔名
+    // 5. 編輯檔名
     const btnEditName = document.getElementById("btnEditName");
     btnEditName?.addEventListener("click", () => {
       const newName = prompt("請輸入音訊檔案名稱：", this.audioFileName);
       if (newName && newName.trim()) {
-        this.audioFileName = newName.trim();
-        const label = document.getElementById("labelFileName");
-        if (label) label.textContent = this.audioFileName;
+        this.setSongTitle(newName.trim());
         this.showToast(`已更名為：${this.audioFileName}`);
       }
     });
 
-    // 5. 標記重要點
+    // 6. 標記重要點
     const btnAddMarker = document.getElementById("btnAddMarker");
     btnAddMarker?.addEventListener("click", () => {
       this.markerCount++;
       this.showToast(`已建立新重要標記點（第 ${this.markerCount} 個）`);
     });
 
-    // 6. 分享到 iPhone 鈴聲 (GarageBand 專用)
+    // 7. 分享到 iPhone 鈴聲 (GarageBand 專用)
     const btnShareIPhone = document.getElementById("btnShareIPhone");
     btnShareIPhone?.addEventListener("click", async () => {
       this.handleExportGarageBand();
     });
 
-    // 7. 下載按鈕
+    // 8. 下載按鈕
     const btnDownload = document.getElementById("btnDownload");
     btnDownload?.addEventListener("click", async () => {
       this.handleDownloadRingtone();
     });
 
-    // 8. 格式選擇
+    // 9. 格式選擇
     const selectFormat = document.getElementById("selectFormat") as HTMLSelectElement;
     selectFormat?.addEventListener("change", () => {
       this.exportFormat = selectFormat.value;
       this.showToast(`導出格式切換為：.${this.exportFormat}`);
     });
 
-    // 9. AI 指令發送
+    // 10. AI 指令發送
     const inputPrompt = document.getElementById("inputPrompt") as HTMLTextAreaElement;
     const btnSendPrompt = document.getElementById("btnSendPrompt");
     const charCount = document.getElementById("charCount");
@@ -799,23 +778,100 @@ class RingflowApp {
         handleSend();
       }
     });
+  }
 
-    // 10. 底部 4 個快捷特色卡片點擊觸發
-    document.querySelectorAll<HTMLElement>(".feature-card").forEach((card) => {
-      card.addEventListener("click", async () => {
-        const action = card.getAttribute("data-action");
-        if (action === "transcribe") {
-          await this.agent.sendMessage("幫我為這段音訊生成繁體中文高精度逐字稿", this.audioDuration, this.audioFileName);
-        } else if (action === "analyze") {
-          await this.agent.sendMessage("請分析這段錄音的主要關鍵詞、內容摘要與情緒分佈", this.audioDuration, this.audioFileName);
-        } else if (action === "translate") {
-          await this.agent.sendMessage("請將語音內容翻譯為英文、日文與西班牙文重點摘要", this.audioDuration, this.audioFileName);
-        } else if (action === "cloud") {
-          this.showToast("☁️ 已即時同步至 Cloudflare Edge 邊緣節點");
+  //從 YouTube 載入音訊
+  private async loadYoutubeAudio(url: string) {
+    if (this.isLoadingYoutube) return;
+    this.isLoadingYoutube = true;
+
+    const btnYoutubeText = document.getElementById("btnYoutubeText");
+    const btnYoutubeSpinner = document.getElementById("btnYoutubeSpinner");
+    const btnLoadYoutube = document.getElementById("btnLoadYoutube") as HTMLButtonElement;
+
+    if (btnYoutubeText) btnYoutubeText.textContent = "解析中...";
+    btnYoutubeSpinner?.classList.remove("hidden");
+    if (btnLoadYoutube) btnLoadYoutube.disabled = true;
+
+    this.showToast("🔍 正在解析 YouTube 音訊串流...");
+
+    try {
+      // 1. 先嘗試獲取影片標題資訊
+      let songTitle = "YouTube 音訊";
+      try {
+        const infoRes = await fetch(`/api/youtube-info?url=${encodeURIComponent(url)}`);
+        if (infoRes.ok) {
+          const info = await infoRes.json() as { title?: string };
+          if (info.title) songTitle = info.title;
         }
-        this.renderChatMessages();
-      });
-    });
+      } catch {
+        //忽略 info 錯誤
+      }
+
+      // 2. 獲取音訊串流二進制資料
+      const audioRes = await fetch(`/api/youtube-audio?url=${encodeURIComponent(url)}`);
+      if (!audioRes.ok) {
+        throw new Error("無法取得 YouTube 音訊串流");
+      }
+
+      const arrayBuffer = await audioRes.arrayBuffer();
+      const audioBuffer = await this.engine.loadAudioData(arrayBuffer);
+
+      this.setSongTitle(songTitle);
+      this.audioFileType = "AAC/M4A";
+      this.audioFileSize = `${(arrayBuffer.byteLength / (1024 * 1024)).toFixed(1)} MB`;
+      this.audioDuration = audioBuffer.duration;
+
+      this.updateSongInfoDisplays();
+      this.viewer.setAudioBuffer(audioBuffer);
+      this.startSec = 0;
+      this.endSec = Math.min(29.5, this.audioDuration);
+      this.updateTimeDisplays();
+
+      this.showToast(`✅ YouTube 音訊載入成功！總時長 ${this.formatTime(this.audioDuration)}`);
+
+      //自動觸發 AI 助手分析副歌
+      this.agent.addThinkingMessage();
+      this.renderChatMessages();
+      await this.agent.analyzeChorus(this.audioFileName, this.audioDuration);
+      this.renderChatMessages();
+    } catch (err) {
+      this.showToast("⚠️ YouTube 音訊解析失敗，請確認網址或改用本地檔案上傳");
+    } finally {
+      this.isLoadingYoutube = false;
+      if (btnYoutubeText) btnYoutubeText.textContent = "解析載入";
+      btnYoutubeSpinner?.classList.add("hidden");
+      if (btnLoadYoutube) btnLoadYoutube.disabled = false;
+    }
+  }
+
+  //更新歌曲名稱與頂部 Badge
+  private setSongTitle(name: string) {
+    this.audioFileName = name;
+    const labelFileName = document.getElementById("labelFileName");
+    const badgeSongTitle = document.getElementById("badgeSongTitle");
+
+    if (labelFileName) {
+      labelFileName.textContent = this.audioFileName;
+      labelFileName.setAttribute("title", this.audioFileName);
+    }
+    if (badgeSongTitle) {
+      badgeSongTitle.textContent = this.audioFileName;
+      badgeSongTitle.setAttribute("title", this.audioFileName);
+    }
+  }
+
+  //更新歌曲長度與格式顯示
+  private updateSongInfoDisplays() {
+    const labelFileType = document.getElementById("labelFileType");
+    const labelFileSize = document.getElementById("labelFileSize");
+    const labelTotalDuration = document.getElementById("labelTotalDuration");
+    const timecodeTotal = document.getElementById("timecodeTotal");
+
+    if (labelFileType) labelFileType.textContent = this.audioFileType;
+    if (labelFileSize) labelFileSize.textContent = this.audioFileSize;
+    if (labelTotalDuration) labelTotalDuration.textContent = this.formatTime(this.audioDuration);
+    if (timecodeTotal) timecodeTotal.textContent = this.formatTime(this.audioDuration);
   }
 
   //設定音訊引擎回呼事件
@@ -848,20 +904,13 @@ class RingflowApp {
       const arrayBuffer = await file.arrayBuffer();
       const audioBuffer = await this.engine.loadAudioData(arrayBuffer);
 
-      this.audioFileName = file.name.replace(/\.[^/.]+$/, "");
+      const title = file.name.replace(/\.[^/.]+$/, "");
+      this.setSongTitle(title);
       this.audioFileType = file.name.split(".").pop()?.toUpperCase() || "MP3";
       this.audioFileSize = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
       this.audioDuration = audioBuffer.duration;
 
-      //更新介面顯示
-      const labelFileName = document.getElementById("labelFileName");
-      const labelTotalDuration = document.getElementById("labelTotalDuration");
-      const timecodeTotal = document.getElementById("timecodeTotal");
-
-      if (labelFileName) labelFileName.textContent = this.audioFileName;
-      if (labelTotalDuration) labelTotalDuration.textContent = this.formatTime(this.audioDuration);
-      if (timecodeTotal) timecodeTotal.textContent = this.formatTime(this.audioDuration);
-
+      this.updateSongInfoDisplays();
       this.viewer.setAudioBuffer(audioBuffer);
       this.startSec = 0;
       this.endSec = Math.min(29.5, this.audioDuration);
@@ -870,9 +919,11 @@ class RingflowApp {
       this.showToast(`音訊解析成功！總時長 ${this.formatTime(this.audioDuration)}`);
 
       //自動觸發 AI 助手分析
+      this.agent.addThinkingMessage();
+      this.renderChatMessages();
       await this.agent.analyzeChorus(this.audioFileName, this.audioDuration);
       this.renderChatMessages();
-    } catch (err) {
+    } catch {
       this.showToast("音訊檔案載入失敗，請確認格式是否正確");
     }
   }
@@ -892,7 +943,7 @@ class RingflowApp {
 
     if (badgeStatus) {
       if (len <= 40.05) {
-        badgeStatus.className = "flex items-center space-x-1 px-2.5 py-0.5 rounded-md bg-emerald-100/90 text-emerald-700 text-[11px] font-bold";
+        badgeStatus.className = "flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-100/90 text-emerald-700 text-[11px] font-bold";
         badgeStatus.innerHTML = `
           <svg class="w-3 h-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <polyline points="20 6 9 17 4 12"></polyline>
@@ -900,7 +951,7 @@ class RingflowApp {
           <span>符合需求</span>
         `;
       } else {
-        badgeStatus.className = "flex items-center space-x-1 px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-700 text-[11px] font-bold";
+        badgeStatus.className = "flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-rose-100 text-rose-700 text-[11px] font-bold";
         badgeStatus.innerHTML = `
           <svg class="w-3 h-3 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -928,7 +979,6 @@ class RingflowApp {
       if (this.engine.getBuffer()) {
         blob = await this.engine.renderRingtoneBuffer(this.startSec, this.endSec, 0.5, 1.5);
       } else {
-        //無載入本機音訊時生成展示用空音訊 Blob
         blob = new Blob(["DEMO_RINGTONE_DATA"], { type: "audio/mp4" });
       }
 

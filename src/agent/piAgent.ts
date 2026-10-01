@@ -32,71 +32,7 @@ export class SongChorusAgent {
         id: "msg-1",
         role: "assistant",
         timeStr: "01:24",
-        content: "你好！我是您的 iPhone 會議 AI 助手（基於 Pi Agent 架構驅動）。\n只要你匯入音訊檔案，我就能為你分析此檔案中的所有語音位置，推薦最適合的 29 秒語音片段，點擊卡片即可一鍵複製或鎖定內容。"
-      },
-      {
-        id: "msg-2",
-        role: "user",
-        timeStr: "01:24",
-        content: "選取人體重點片段：(No.3 [for-X5v7syA])，長度約 242 秒"
-      },
-      {
-        id: "msg-3",
-        role: "assistant",
-        timeStr: "01:26",
-        content: "我已為你標記了 3 個重要語音片段（No.3 [for-X5v7syA]），總長度約 242 秒。\n以下是詳細的分析結果：",
-        summaryCard: {
-          title: "重要語音片段統計",
-          description: "本段為主要講述內容，包含關鍵資訊與重要觀點，建議優先聽。",
-          badge: "片段 1/3 ❯"
-        }
-      },
-      {
-        id: "msg-4",
-        role: "assistant",
-        timeStr: "01:27",
-        content: "本段語音為「Heavy Rock」風格音樂，整體節奏較快，情緒強烈，適合用於影片剪輯或背景音樂。"
-      },
-      {
-        id: "msg-5",
-        role: "user",
-        timeStr: "01:28",
-        content: "已為你標記 3 個片段：",
-        choruses: [
-          {
-            id: "seg-1",
-            name: "片段 1",
-            startSec: 84.3,
-            endSec: 117.5,
-            tag: "主要內容",
-            description: "主要講述內容與進場核心高潮",
-            rating: 5
-          },
-          {
-            id: "seg-2",
-            name: "片段 2",
-            startSec: 147.0,
-            endSec: 185.5,
-            tag: "重點段落",
-            description: "連續節奏高潮段落",
-            rating: 5
-          },
-          {
-            id: "seg-3",
-            name: "片段 3",
-            startSec: 185.5,
-            endSec: 235.0,
-            tag: "結尾總結",
-            description: "結尾昇華段落",
-            rating: 4
-          }
-        ]
-      },
-      {
-        id: "msg-6",
-        role: "assistant",
-        timeStr: "01:27",
-        content: "已完成分析！如需要詳細的逐字稿、摘要或多語言翻譯，歡迎隨時告訴我。"
+        content: "你好！我是您的 iPhone 鈴聲 AI 助手（基於 Pi Agent 架構驅動）。\n只要您匯入音訊或輸入 YouTube 連結，我就能為您智慧分析旋律高潮與重點語音，推薦最適合的 29 秒鈴聲片段。"
       }
     ];
   }
@@ -170,7 +106,7 @@ export class SongChorusAgent {
       id: "a-" + Date.now(),
       role: "assistant",
       timeStr: this.formatTimeNow(),
-      content: `我已為你標記了 3 個重要語音片段（${songTitle || "No.3"}），總長度約 ${Math.floor(duration)} 秒。\n以下是詳細的分析結果：`,
+      content: `我已為你標記了 3 個重要語音片段（${songTitle || "音訊檔案"}），總長度約 ${Math.floor(duration)} 秒。\n以下是詳細的分析結果：`,
       choruses: fallbackChoruses,
       summaryCard: {
         title: "重要語音片段統計",
