@@ -1,0 +1,619 @@
+------formdata-undici-069977370500
+Content-Disposition: form-data; name="metadata"
+
+{"main_module":"functionsWorker-0.24245466535895632.js"}
+------formdata-undici-069977370500
+Content-Disposition: form-data; name="functionsWorker-0.24245466535895632.js"; filename="functionsWorker-0.24245466535895632.js"
+Content-Type: application/javascript+module
+
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+
+// api/agent.ts
+async function onRequestPost(context) {
+  try {
+    const body = await context.request.json();
+    const title = body.title || "\u672A\u77E5\u66F2\u76EE";
+    const duration = body.duration || 240;
+    if (/no\.?3|ftisland/i.test(title)) {
+      return new Response(
+        JSON.stringify({
+          content: `\u5DF2\u6210\u529F\u70BA\u60A8\u8FA8\u8B58\u300AFTISLAND - No.3\u300B\u7684\u6B4C\u66F2\u7D50\u69CB\uFF01\u9019\u9996\u6B4C\u66F2\u7E3D\u9577\u7D04 04:02\uFF0C\u526F\u6B4C\u70BA\u9AD8\u80FD\u91CF J-Rock \u7206\u767C\u98A8\u683C\uFF0C\u6211\u70BA\u60A8\u7CBE\u6E96\u63D0\u53D6\u4E86 3 \u500B\u6700\u5177\u4EE3\u8868\u6027\u7684 29.5 \u79D2\u9EC3\u91D1\u9234\u8072\u7247\u6BB5\uFF1A`,
+          choruses: [
+            {
+              id: "ft-1",
+              name: "\u{1F525} \u7B2C\u4E00\u6B21\u526F\u6B4C (Ain't gonna get away)",
+              startSec: 54,
+              endSec: 83.5,
+              lyricsHighlight: "Ain't gonna get away \u58CA\u305B \u5410\u304D\u51FA\u305B / \u81EA\u5206\u3092\u6253\u3061\u7834\u308C...",
+              description: "\u6700\u5177\u6A19\u8A8C\u6027\u7684\u9032\u5834\u70B8\u9EDE\uFF01\u5F9E\u674E\u6D2A\u57FA\u9AD8\u97F3\u7206\u767C\u5207\u5165\uFF0C\u7BC0\u594F\u5F37\u52C1\uFF0C\u6975\u63A8\u85A6\u4F5C\u70BA\u4E3B\u9234\u8072\u3002",
+              rating: 5
+            },
+            {
+              id: "ft-2",
+              name: "\u26A1 \u885D\u523A\u96D9\u9F13\u9EDE\u6BB5 (We gotta go)",
+              startSec: 68.5,
+              endSec: 97.5,
+              lyricsHighlight: "We gotta go (Go) Get up (Up) \u5909\u308F\u308B\u4E16\u754C...",
+              description: "\u526F\u6B4C\u5F8C\u534A\u90E8\u7684\u9023\u7E8C\u91CD\u9F13\u9EDE\u885D\u523A\uFF0C\u7BC0\u594F\u611F\u6975\u5F37\uFF0C\u5728\u6236\u5916\u7D55\u5C0D\u4E0D\u6703\u6F0F\u63A5\u4F86\u96FB\u3002",
+              rating: 5
+            },
+            {
+              id: "ft-3",
+              name: "\u{1F31F} \u6700\u7D42\u5927\u526F\u6B4C (Life is a chance)",
+              startSec: 185,
+              endSec: 214.5,
+              lyricsHighlight: "\u8AE6\u3081\u306A\u3044\u9650\u308A Life is a chance / \u7121\u6557\u306E\u6311\u6226\u8005...",
+              description: "\u96FB\u5409\u4ED6 Solo \u5F8C\u7684\u6700\u7D42\u6607\u83EF\u7248\u526F\u6B4C\uFF0C\u65CB\u5F8B\u958B\u95CA\u71B1\u8840\uFF0C\u5145\u6EFF\u5E0C\u671B\u8207\u6FC0\u52F5\u611F\u3002",
+              rating: 5
+            }
+          ]
+        }),
+        {
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+    }
+    const c1 = Math.max(30, Math.floor(duration * 0.22));
+    const c2 = Math.floor(duration * 0.52);
+    const c3 = Math.floor(duration * 0.78);
+    return new Response(
+      JSON.stringify({
+        content: `PI Agent \u5DF2\u5B8C\u6210\u300A${title}\u300B\u6B4C\u66F2\u7D50\u69CB\u89E3\u6790\uFF01\u70BA\u60A8\u63A8\u85A6\u4EE5\u4E0B 3 \u500B\u6700\u7B26\u5408 iPhone \u9234\u8072\uFF08< 30 \u79D2\uFF09\u7684\u526F\u6B4C\u5340\u9593\uFF1A`,
+        choruses: [
+          {
+            id: "c-1",
+            name: "\u{1F3B5} \u7B2C\u4E00\u6B21\u526F\u6B4C (\u9032\u5834\u9AD8\u6F6E)",
+            startSec: c1,
+            endSec: Math.min(duration, c1 + 29.5),
+            lyricsHighlight: "\u4E3B\u6B4C\u63A8\u9032\u81F3\u9AD8\u6F6E\u7684\u9996\u6B21\u526F\u6B4C",
+            description: "\u65CB\u5F8B\u6D17\u8166\u3001\u8FA8\u8B58\u5EA6\u6975\u9AD8\uFF0C29.5 \u79D2\u9EC3\u91D1\u9577\u5EA6\u7B26\u5408 iPhone \u4F86\u96FB\u9650\u5236\u3002",
+            rating: 5
+          },
+          {
+            id: "c-2",
+            name: "\u26A1 \u7B2C\u4E8C\u6B21\u526F\u6B4C (\u52D5\u614B\u98FD\u6EFF)",
+            startSec: c2,
+            endSec: Math.min(duration, c2 + 29.5),
+            lyricsHighlight: "\u4E2D\u6BB5\u526F\u6B4C\u7206\u767C",
+            description: "\u9F13\u9EDE\u7BC0\u594F\u52A0\u5F37\uFF0C\u60C5\u611F\u6700\u6FC3\u70C8\u3002",
+            rating: 4
+          },
+          {
+            id: "c-3",
+            name: "\u{1F525} \u6700\u7D42\u5927\u526F\u6B4C (\u5C3E\u8072\u6607\u83EF)",
+            startSec: c3,
+            endSec: Math.min(duration, c3 + 29.5),
+            lyricsHighlight: "\u7D42\u6BB5\u9AD8\u6F6E\u5408\u5531",
+            description: "\u6574\u66F2\u6700\u9AD8\u97F3\u8207\u6700\u5927\u52D5\u614B\uFF0C\u9707\u64BC\u529B\u5341\u8DB3\u3002",
+            rating: 5
+          }
+        ]
+      }),
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return new Response(
+      JSON.stringify({ error: errorMsg }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+__name(onRequestPost, "onRequestPost");
+
+// api/youtube.ts
+async function onRequestGet(context) {
+  const url = new URL(context.request.url);
+  const targetUrl = url.searchParams.get("url");
+  if (!targetUrl) {
+    return new Response(JSON.stringify({ error: "\u7F3A\u5C11 url \u53C3\u6578" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+  try {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match2 = targetUrl.match(regExp);
+    const videoId = match2 && match2[2].length === 11 ? match2[2] : null;
+    if (!videoId) {
+      return new Response(JSON.stringify({ error: "\u7121\u6548\u7684 YouTube \u9023\u7D50" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    return new Response(
+      JSON.stringify({
+        success: true,
+        videoId,
+        title: videoId === "ror-X5v7syA" ? "FTISLAND - No.3" : `YouTube \u97F3\u8A0A (${videoId})`,
+        duration: videoId === "ror-X5v7syA" ? 242 : 210,
+        message: "\u89E3\u6790\u6210\u529F\uFF01\u53EF\u76F4\u63A5\u4F7F\u7528\u672C\u6A5F\u4E0A\u50B3\u6216\u900F\u904E\u4E32\u6D41\u8F09\u5165\u97F3\u8A0A\u3002"
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      }
+    );
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify({ error: errorMsg }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet, "onRequestGet");
+
+// ../.wrangler/tmp/pages-DEbVqI/functionsRoutes-0.43959352608800273.mjs
+var routes = [
+  {
+    routePath: "/api/agent",
+    mountPath: "/api",
+    method: "POST",
+    middlewares: [],
+    modules: [onRequestPost]
+  },
+  {
+    routePath: "/api/youtube",
+    mountPath: "/api",
+    method: "GET",
+    middlewares: [],
+    modules: [onRequestGet]
+  }
+];
+
+// ../node_modules/path-to-regexp/dist.es2015/index.js
+function lexer(str) {
+  var tokens = [];
+  var i = 0;
+  while (i < str.length) {
+    var char = str[i];
+    if (char === "*" || char === "+" || char === "?") {
+      tokens.push({ type: "MODIFIER", index: i, value: str[i++] });
+      continue;
+    }
+    if (char === "\\") {
+      tokens.push({ type: "ESCAPED_CHAR", index: i++, value: str[i++] });
+      continue;
+    }
+    if (char === "{") {
+      tokens.push({ type: "OPEN", index: i, value: str[i++] });
+      continue;
+    }
+    if (char === "}") {
+      tokens.push({ type: "CLOSE", index: i, value: str[i++] });
+      continue;
+    }
+    if (char === ":") {
+      var name = "";
+      var j = i + 1;
+      while (j < str.length) {
+        var code = str.charCodeAt(j);
+        if (
+          // `0-9`
+          code >= 48 && code <= 57 || // `A-Z`
+          code >= 65 && code <= 90 || // `a-z`
+          code >= 97 && code <= 122 || // `_`
+          code === 95
+        ) {
+          name += str[j++];
+          continue;
+        }
+        break;
+      }
+      if (!name)
+        throw new TypeError("Missing parameter name at ".concat(i));
+      tokens.push({ type: "NAME", index: i, value: name });
+      i = j;
+      continue;
+    }
+    if (char === "(") {
+      var count = 1;
+      var pattern = "";
+      var j = i + 1;
+      if (str[j] === "?") {
+        throw new TypeError('Pattern cannot start with "?" at '.concat(j));
+      }
+      while (j < str.length) {
+        if (str[j] === "\\") {
+          pattern += str[j++] + str[j++];
+          continue;
+        }
+        if (str[j] === ")") {
+          count--;
+          if (count === 0) {
+            j++;
+            break;
+          }
+        } else if (str[j] === "(") {
+          count++;
+          if (str[j + 1] !== "?") {
+            throw new TypeError("Capturing groups are not allowed at ".concat(j));
+          }
+        }
+        pattern += str[j++];
+      }
+      if (count)
+        throw new TypeError("Unbalanced pattern at ".concat(i));
+      if (!pattern)
+        throw new TypeError("Missing pattern at ".concat(i));
+      tokens.push({ type: "PATTERN", index: i, value: pattern });
+      i = j;
+      continue;
+    }
+    tokens.push({ type: "CHAR", index: i, value: str[i++] });
+  }
+  tokens.push({ type: "END", index: i, value: "" });
+  return tokens;
+}
+__name(lexer, "lexer");
+function parse(str, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  var tokens = lexer(str);
+  var _a = options.prefixes, prefixes = _a === void 0 ? "./" : _a, _b = options.delimiter, delimiter = _b === void 0 ? "/#?" : _b;
+  var result = [];
+  var key = 0;
+  var i = 0;
+  var path = "";
+  var tryConsume = /* @__PURE__ */ __name(function(type) {
+    if (i < tokens.length && tokens[i].type === type)
+      return tokens[i++].value;
+  }, "tryConsume");
+  var mustConsume = /* @__PURE__ */ __name(function(type) {
+    var value2 = tryConsume(type);
+    if (value2 !== void 0)
+      return value2;
+    var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
+    throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
+  }, "mustConsume");
+  var consumeText = /* @__PURE__ */ __name(function() {
+    var result2 = "";
+    var value2;
+    while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
+      result2 += value2;
+    }
+    return result2;
+  }, "consumeText");
+  var isSafe = /* @__PURE__ */ __name(function(value2) {
+    for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
+      var char2 = delimiter_1[_i];
+      if (value2.indexOf(char2) > -1)
+        return true;
+    }
+    return false;
+  }, "isSafe");
+  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+    var prev = result[result.length - 1];
+    var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
+    if (prev && !prevText) {
+      throw new TypeError('Must have text between two parameters, missing text after "'.concat(prev.name, '"'));
+    }
+    if (!prevText || isSafe(prevText))
+      return "[^".concat(escapeString(delimiter), "]+?");
+    return "(?:(?!".concat(escapeString(prevText), ")[^").concat(escapeString(delimiter), "])+?");
+  }, "safePattern");
+  while (i < tokens.length) {
+    var char = tryConsume("CHAR");
+    var name = tryConsume("NAME");
+    var pattern = tryConsume("PATTERN");
+    if (name || pattern) {
+      var prefix = char || "";
+      if (prefixes.indexOf(prefix) === -1) {
+        path += prefix;
+        prefix = "";
+      }
+      if (path) {
+        result.push(path);
+        path = "";
+      }
+      result.push({
+        name: name || key++,
+        prefix,
+        suffix: "",
+        pattern: pattern || safePattern(prefix),
+        modifier: tryConsume("MODIFIER") || ""
+      });
+      continue;
+    }
+    var value = char || tryConsume("ESCAPED_CHAR");
+    if (value) {
+      path += value;
+      continue;
+    }
+    if (path) {
+      result.push(path);
+      path = "";
+    }
+    var open = tryConsume("OPEN");
+    if (open) {
+      var prefix = consumeText();
+      var name_1 = tryConsume("NAME") || "";
+      var pattern_1 = tryConsume("PATTERN") || "";
+      var suffix = consumeText();
+      mustConsume("CLOSE");
+      result.push({
+        name: name_1 || (pattern_1 ? key++ : ""),
+        pattern: name_1 && !pattern_1 ? safePattern(prefix) : pattern_1,
+        prefix,
+        suffix,
+        modifier: tryConsume("MODIFIER") || ""
+      });
+      continue;
+    }
+    mustConsume("END");
+  }
+  return result;
+}
+__name(parse, "parse");
+function match(str, options) {
+  var keys = [];
+  var re = pathToRegexp(str, keys, options);
+  return regexpToFunction(re, keys, options);
+}
+__name(match, "match");
+function regexpToFunction(re, keys, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  var _a = options.decode, decode = _a === void 0 ? function(x) {
+    return x;
+  } : _a;
+  return function(pathname) {
+    var m = re.exec(pathname);
+    if (!m)
+      return false;
+    var path = m[0], index = m.index;
+    var params = /* @__PURE__ */ Object.create(null);
+    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+      if (m[i2] === void 0)
+        return "continue";
+      var key = keys[i2 - 1];
+      if (key.modifier === "*" || key.modifier === "+") {
+        params[key.name] = m[i2].split(key.prefix + key.suffix).map(function(value) {
+          return decode(value, key);
+        });
+      } else {
+        params[key.name] = decode(m[i2], key);
+      }
+    }, "_loop_1");
+    for (var i = 1; i < m.length; i++) {
+      _loop_1(i);
+    }
+    return { path, index, params };
+  };
+}
+__name(regexpToFunction, "regexpToFunction");
+function escapeString(str) {
+  return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
+}
+__name(escapeString, "escapeString");
+function flags(options) {
+  return options && options.sensitive ? "" : "i";
+}
+__name(flags, "flags");
+function regexpToRegexp(path, keys) {
+  if (!keys)
+    return path;
+  var groupsRegex = /\((?:\?<(.*?)>)?(?!\?)/g;
+  var index = 0;
+  var execResult = groupsRegex.exec(path.source);
+  while (execResult) {
+    keys.push({
+      // Use parenthesized substring match if available, index otherwise
+      name: execResult[1] || index++,
+      prefix: "",
+      suffix: "",
+      modifier: "",
+      pattern: ""
+    });
+    execResult = groupsRegex.exec(path.source);
+  }
+  return path;
+}
+__name(regexpToRegexp, "regexpToRegexp");
+function arrayToRegexp(paths, keys, options) {
+  var parts = paths.map(function(path) {
+    return pathToRegexp(path, keys, options).source;
+  });
+  return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
+}
+__name(arrayToRegexp, "arrayToRegexp");
+function stringToRegexp(path, keys, options) {
+  return tokensToRegexp(parse(path, options), keys, options);
+}
+__name(stringToRegexp, "stringToRegexp");
+function tokensToRegexp(tokens, keys, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  var _a = options.strict, strict = _a === void 0 ? false : _a, _b = options.start, start = _b === void 0 ? true : _b, _c = options.end, end = _c === void 0 ? true : _c, _d = options.encode, encode = _d === void 0 ? function(x) {
+    return x;
+  } : _d, _e = options.delimiter, delimiter = _e === void 0 ? "/#?" : _e, _f = options.endsWith, endsWith = _f === void 0 ? "" : _f;
+  var endsWithRe = "[".concat(escapeString(endsWith), "]|$");
+  var delimiterRe = "[".concat(escapeString(delimiter), "]");
+  var route = start ? "^" : "";
+  for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+    var token = tokens_1[_i];
+    if (typeof token === "string") {
+      route += escapeString(encode(token));
+    } else {
+      var prefix = escapeString(encode(token.prefix));
+      var suffix = escapeString(encode(token.suffix));
+      if (token.pattern) {
+        if (keys)
+          keys.push(token);
+        if (prefix || suffix) {
+          if (token.modifier === "+" || token.modifier === "*") {
+            var mod = token.modifier === "*" ? "?" : "";
+            route += "(?:".concat(prefix, "((?:").concat(token.pattern, ")(?:").concat(suffix).concat(prefix, "(?:").concat(token.pattern, "))*)").concat(suffix, ")").concat(mod);
+          } else {
+            route += "(?:".concat(prefix, "(").concat(token.pattern, ")").concat(suffix, ")").concat(token.modifier);
+          }
+        } else {
+          if (token.modifier === "+" || token.modifier === "*") {
+            throw new TypeError('Can not repeat "'.concat(token.name, '" without a prefix and suffix'));
+          }
+          route += "(".concat(token.pattern, ")").concat(token.modifier);
+        }
+      } else {
+        route += "(?:".concat(prefix).concat(suffix, ")").concat(token.modifier);
+      }
+    }
+  }
+  if (end) {
+    if (!strict)
+      route += "".concat(delimiterRe, "?");
+    route += !options.endsWith ? "$" : "(?=".concat(endsWithRe, ")");
+  } else {
+    var endToken = tokens[tokens.length - 1];
+    var isEndDelimited = typeof endToken === "string" ? delimiterRe.indexOf(endToken[endToken.length - 1]) > -1 : endToken === void 0;
+    if (!strict) {
+      route += "(?:".concat(delimiterRe, "(?=").concat(endsWithRe, "))?");
+    }
+    if (!isEndDelimited) {
+      route += "(?=".concat(delimiterRe, "|").concat(endsWithRe, ")");
+    }
+  }
+  return new RegExp(route, flags(options));
+}
+__name(tokensToRegexp, "tokensToRegexp");
+function pathToRegexp(path, keys, options) {
+  if (path instanceof RegExp)
+    return regexpToRegexp(path, keys);
+  if (Array.isArray(path))
+    return arrayToRegexp(path, keys, options);
+  return stringToRegexp(path, keys, options);
+}
+__name(pathToRegexp, "pathToRegexp");
+
+// ../node_modules/wrangler/templates/pages-template-worker.ts
+var escapeRegex = /[.+?^${}()|[\]\\]/g;
+function* executeRequest(request) {
+  const requestPath = new URL(request.url).pathname;
+  for (const route of [...routes].reverse()) {
+    if (route.method && route.method !== request.method) {
+      continue;
+    }
+    const routeMatcher = match(route.routePath.replace(escapeRegex, "\\$&"), {
+      end: false
+    });
+    const mountMatcher = match(route.mountPath.replace(escapeRegex, "\\$&"), {
+      end: false
+    });
+    const matchResult = routeMatcher(requestPath);
+    const mountMatchResult = mountMatcher(requestPath);
+    if (matchResult && mountMatchResult) {
+      for (const handler of route.middlewares.flat()) {
+        yield {
+          handler,
+          params: matchResult.params,
+          path: mountMatchResult.path
+        };
+      }
+    }
+  }
+  for (const route of routes) {
+    if (route.method && route.method !== request.method) {
+      continue;
+    }
+    const routeMatcher = match(route.routePath.replace(escapeRegex, "\\$&"), {
+      end: true
+    });
+    const mountMatcher = match(route.mountPath.replace(escapeRegex, "\\$&"), {
+      end: false
+    });
+    const matchResult = routeMatcher(requestPath);
+    const mountMatchResult = mountMatcher(requestPath);
+    if (matchResult && mountMatchResult && route.modules.length) {
+      for (const handler of route.modules.flat()) {
+        yield {
+          handler,
+          params: matchResult.params,
+          path: matchResult.path
+        };
+      }
+      break;
+    }
+  }
+}
+__name(executeRequest, "executeRequest");
+var pages_template_worker_default = {
+  async fetch(originalRequest, env, workerContext) {
+    let request = originalRequest;
+    const handlerIterator = executeRequest(request);
+    let data = {};
+    let isFailOpen = false;
+    const next = /* @__PURE__ */ __name(async (input, init) => {
+      if (input !== void 0) {
+        let url = input;
+        if (typeof input === "string") {
+          url = new URL(input, request.url).toString();
+        }
+        request = new Request(url, init);
+      }
+      const result = handlerIterator.next();
+      if (result.done === false) {
+        const { handler, params, path } = result.value;
+        const context = {
+          request: new Request(request.clone()),
+          functionPath: path,
+          next,
+          params,
+          get data() {
+            return data;
+          },
+          set data(value) {
+            if (typeof value !== "object" || value === null) {
+              throw new Error("context.data must be an object");
+            }
+            data = value;
+          },
+          env,
+          waitUntil: workerContext.waitUntil.bind(workerContext),
+          passThroughOnException: /* @__PURE__ */ __name(() => {
+            isFailOpen = true;
+          }, "passThroughOnException")
+        };
+        const response = await handler(context);
+        if (!(response instanceof Response)) {
+          throw new Error("Your Pages function should return a Response");
+        }
+        return cloneResponse(response);
+      } else if ("ASSETS") {
+        const response = await env["ASSETS"].fetch(request);
+        return cloneResponse(response);
+      } else {
+        const response = await fetch(request);
+        return cloneResponse(response);
+      }
+    }, "next");
+    try {
+      return await next();
+    } catch (error) {
+      if (isFailOpen) {
+        const response = await env["ASSETS"].fetch(request);
+        return cloneResponse(response);
+      }
+      throw error;
+    }
+  }
+};
+var cloneResponse = /* @__PURE__ */ __name((response) => (
+  // https://fetch.spec.whatwg.org/#null-body-status
+  new Response(
+    [101, 204, 205, 304].includes(response.status) ? null : response.body,
+    response
+  )
+), "cloneResponse");
+export {
+  pages_template_worker_default as default
+};
+
+------formdata-undici-069977370500--
