@@ -66,9 +66,8 @@ class RingflowApp {
               <svg class="w-8 h-8 text-orange-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 10v4M6 6v12M10 3v18M14 8v8M18 5v14M22 10v4" />
               </svg>
-              <div class="flex items-baseline gap-2">
+              <div class="flex items-baseline">
                 <span class="text-xl md:text-2xl font-black tracking-tight text-slate-800 font-sans">RINGFLOW</span>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-sm bg-slate-100 text-slate-500 border border-slate-200 uppercase tracking-wider">PRO STUDIO</span>
               </div>
             </div>
           </div>
