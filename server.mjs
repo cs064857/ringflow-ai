@@ -57,7 +57,7 @@ app.get("/api/youtube-info", (req, res) => {
   proc.stderr.on("data", (chunk) => { stderrData += chunk.toString(); });
 
   proc.on("close", (code) => {
-    if (code === 0) {
+    if (code === 0 && stdoutData.trim()) {
       try {
         const info = JSON.parse(stdoutData);
         return res.json({
@@ -71,10 +71,10 @@ app.get("/api/youtube-info", (req, res) => {
       }
     }
     console.error("[yt-dlp info error]", stderrData);
-    return res.json({
-      success: true,
-      title: "YouTube 音訊",
-      duration: 240
+    return res.status(400).json({
+      success: false,
+      error: "YouTube 解析失敗或影片受限",
+      detail: stderrData.slice(0, 200)
     });
   });
 });
@@ -85,8 +85,6 @@ app.get("/api/youtube-audio", (req, res) => {
   if (!targetUrl || typeof targetUrl !== "string") {
     return res.status(400).send("Missing url parameter");
   }
-
-  res.setHeader("Content-Type", "audio/mp4");
 
   const args = getYtDlpArgs([
     "-f", "bestaudio/best",
@@ -99,7 +97,21 @@ app.get("/api/youtube-audio", (req, res) => {
     env: { ...process.env, HTTP_PROXY: "", HTTPS_PROXY: "", http_proxy: "", https_proxy: "" }
   });
 
-  yt.stdout.pipe(res);
+  let hasData = false;
+  yt.stdout.on("data", (chunk) => {
+    if (!hasData) {
+      hasData = true;
+      res.setHeader("Content-Type", "audio/mp4");
+    }
+    res.write(chunk);
+  });
+
+  yt.on("close", (code) => {
+    if (!hasData) {
+      return res.status(400).send("無法下載音訊串流，該影片受限或無效");
+    }
+    res.end();
+  });
 
   req.on("close", () => {
     yt.kill();
