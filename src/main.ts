@@ -1,3 +1,4 @@
+import JSZip from 'jszip';
 //RINGFLOW 專業音訊工作台前端 UI
 import { AudioEngine } from "./audio/engine";
 import { WaveformViewer } from "./audio/waveform";
@@ -298,14 +299,31 @@ class RingflowApp {
                 </div>
 
                 <!-- 導出與分享大按鈕區 -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-2">
-                  <!-- 主分享按鈕 -->
-                  <button id="btnShareIPhone" class="flex-1 py-3 px-4 rounded-xl bg-amber-300 hover:bg-amber-400 active:scale-[0.99] text-slate-900 font-bold text-sm shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M4 4h4v4H4zM10 4h4v4h-4zM16 4h4v4h-4zM4 10h4v4H4zM10 10h4v4h-4zM16 10h4v4h-4zM4 16h4v4H4zM10 16h4v4h-4zM16 16h4v4h-4z" />
+                <div class="flex flex-col gap-2.5 pt-2">
+                  <!-- 新按鈕：一鍵以 GarageBand 開啟（免排音軌） -->
+                  <button id="btnOpenInGarageBand" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 hover:from-amber-500 hover:to-orange-500 active:scale-[0.99] text-slate-950 font-black text-sm shadow-md flex items-center justify-center gap-2.5 transition-all cursor-pointer border border-amber-300/60">
+                    <svg class="w-5 h-5 text-slate-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="2"/>
+                      <path d="M12 2v2"/>
+                      <path d="M12 20v2"/>
+                      <path d="m4.93 4.93 1.41 1.41"/>
+                      <path d="m17.66 17.66 1.41 1.41"/>
+                      <path d="M2 12h2"/>
+                      <path d="M20 12h2"/>
+                      <path d="m6.34 17.66-1.41 1.41"/>
+                      <path d="m19.07 4.93-1.41 1.41"/>
                     </svg>
-                    <span>分享到 iPhone 轉錄（GarageBand 專用）</span>
+                    <span>🎸 一鍵「以 GarageBand 開啟」（已排好音軌，解壓即用）</span>
                   </button>
+
+                  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+                    <!-- 原有主分享按鈕（保留） -->
+                    <button id="btnShareIPhone" class="flex-1 py-3 px-4 rounded-xl bg-amber-100 hover:bg-amber-200 active:scale-[0.99] text-slate-800 font-bold text-xs sm:text-sm border border-amber-300/80 shadow-2xs flex items-center justify-center gap-2 transition-all cursor-pointer">
+                      <svg class="w-4 h-4 text-amber-700" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4 4h4v4H4zM10 4h4v4h-4zM16 4h4v4h-4zM4 10h4v4H4zM10 10h4v4h-4zM16 10h4v4h-4zM4 16h4v4H4zM10 16h4v4h-4zM16 16h4v4h-4z" />
+                      </svg>
+                      <span>分享到 iPhone 轉錄（GarageBand 專用 .m4r）</span>
+                    </button>
 
                   <div class="flex items-center gap-2">
                     <!-- 下載按鈕 -->
@@ -765,7 +783,13 @@ class RingflowApp {
       this.showToast(`已建立新重要標記點（第 ${this.markerCount} 個）`);
     });
 
-    // 7. 分享到 iPhone 鈴聲 (GarageBand 專用)
+    // 7-1. 一鍵以 GarageBand 開啟專案 (.band.zip)
+    const btnOpenInGarageBand = document.getElementById("btnOpenInGarageBand");
+    btnOpenInGarageBand?.addEventListener("click", async () => {
+      this.handleOpenInGarageBandProject();
+    });
+
+    // 7-2. 分享到 iPhone 鈴聲 (GarageBand 專用 .m4r)
     const btnShareIPhone = document.getElementById("btnShareIPhone");
     btnShareIPhone?.addEventListener("click", async () => {
       this.handleExportGarageBand();
@@ -1007,6 +1031,62 @@ class RingflowApp {
     const timecodeCurrent = document.getElementById("timecodeCurrent");
     if (timecodeCurrent) {
       timecodeCurrent.textContent = this.formatTime(sec);
+    }
+  }
+
+  //一鍵生成 GarageBand 專案 (.band.zip)
+  private async handleOpenInGarageBandProject() {
+    this.showToast("🎸 正在為您打包 GarageBand 專案檔（免手動排音軌）...");
+    try {
+      let wavBlob: Blob;
+      if (this.engine.getBuffer()) {
+        wavBlob = await this.engine.renderRingtoneBuffer(this.startSec, this.endSec, 0.5, 1.5);
+      } else {
+        this.showToast("⚠️ 請先解析載入音訊");
+        return;
+      }
+
+      // 下載伺服器端的 band_base.zip 模板
+      const templateRes = await fetch("/template/band_base.zip");
+      if (!templateRes.ok) {
+        throw new Error("無法獲取 GarageBand 專案模板");
+      }
+      const templateBuf = await templateRes.arrayBuffer();
+
+      // 使用 JSZip 解開並組合
+      const baseZip = await JSZip.loadAsync(templateBuf);
+      const targetZip = new JSZip();
+
+      const safeName = (this.audioFileName || "Ringtone").replace(/[^a-zA-Z0-9_\-\u4e00-\u9fa5]/g, "_");
+      const folderName = `${safeName}.band`;
+
+      // 複製所有模板檔案到 <SongName>.band/
+      for (const [relPath, file] of Object.entries(baseZip.files)) {
+        if (!file.dir) {
+          const content = await file.async("arraybuffer");
+          targetZip.file(`${folderName}/${relPath}`, content);
+        }
+      }
+
+      // 將精確截取的 29.5 秒音訊填入 Media/Ringtone.wav
+      const wavArrayBuffer = await wavBlob.arrayBuffer();
+      targetZip.file(`${folderName}/Media/Ringtone.wav`, wavArrayBuffer);
+
+      // 打包生成 zip
+      const projectZipBlob = await targetZip.generateAsync({
+        type: "blob",
+        mimeType: "application/zip",
+        compression: "DEFLATE",
+        compressionOptions: { level: 6 }
+      });
+
+      const zipFilename = `${folderName}.zip`;
+      this.downloadBlob(projectZipBlob, zipFilename);
+      
+      this.showToast("✅ 已成功下載！在 iPhone「檔案」點一下解壓縮，即可以 GarageBand 直接開啟！");
+    } catch (err) {
+      console.error(err);
+      this.showToast("打包 GarageBand 專案失敗，請重試");
     }
   }
 
