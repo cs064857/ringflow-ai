@@ -26,8 +26,33 @@ app.use((req, res, next) => {
   next();
 });
 
+// 清理 YouTube 網址：提取乾淨的 Video ID，去除 list、start_radio 等導致超時的播放清單參數
+function cleanYoutubeUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== "string") return rawUrl;
+  try {
+    const trimmed = rawUrl.trim();
+    // 支援 youtu.be/ID
+    const shortMatch = trimmed.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+    if (shortMatch && shortMatch[1]) {
+      return `https://www.youtube.com/watch?v=${shortMatch[1]}`;
+    }
+    // 支援 watch?v=ID
+    const vMatch = trimmed.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+    if (vMatch && vMatch[1]) {
+      return `https://www.youtube.com/watch?v=${vMatch[1]}`;
+    }
+    // 支援 shorts/ID
+    const shortsMatch = trimmed.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+    if (shortsMatch && shortsMatch[1]) {
+      return `https://www.youtube.com/watch?v=${shortsMatch[1]}`;
+    }
+  } catch {}
+  return rawUrl;
+}
+
 function getYtDlpArgs(extraArgs = []) {
   const args = [
+    "--no-playlist",
     "--js-runtimes", "quickjs:/usr/bin/qjs",
     "--remote-components", "ejs:github",
     "--no-warnings"
@@ -41,12 +66,13 @@ function getYtDlpArgs(extraArgs = []) {
 
 // 1. YouTube 資訊端點
 app.get("/api/youtube-info", (req, res) => {
-  const targetUrl = req.query.url;
-  if (!targetUrl || typeof targetUrl !== "string") {
+  const rawUrl = req.query.url;
+  if (!rawUrl || typeof rawUrl !== "string") {
     return res.status(400).json({ error: "缺少 url 參數" });
   }
 
-  const args = getYtDlpArgs(["--dump-json", "--no-playlist", targetUrl]);
+  const targetUrl = cleanYoutubeUrl(rawUrl);
+  const args = getYtDlpArgs(["--dump-json", targetUrl]);
   const proc = spawn("yt-dlp", args, {
     env: { ...process.env, HTTP_PROXY: "", HTTPS_PROXY: "", http_proxy: "", https_proxy: "" }
   });
@@ -81,11 +107,12 @@ app.get("/api/youtube-info", (req, res) => {
 
 // 2. YouTube 音訊轉碼串流端點（透過 ffmpeg 即時轉為通用 mp3 格式）
 app.get("/api/youtube-audio", (req, res) => {
-  const targetUrl = req.query.url;
-  if (!targetUrl || typeof targetUrl !== "string") {
+  const rawUrl = req.query.url;
+  if (!rawUrl || typeof rawUrl !== "string") {
     return res.status(400).send("Missing url parameter");
   }
 
+  const targetUrl = cleanYoutubeUrl(rawUrl);
   const args = getYtDlpArgs([
     "-f", "bestaudio/best",
     "-o", "-",
