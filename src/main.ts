@@ -839,6 +839,11 @@ class RingflowApp {
 
     this.showToast("🔍 正在解析 YouTube 音訊串流...");
 
+    // 在使用者點擊事件的上下文同步解鎖 iOS/Safari AudioContext
+    try {
+      this.engine.ensureContext();
+    } catch {}
+
     try {
       // 1. 先嘗試獲取影片標題資訊
       let songTitle = "YouTube 音訊";

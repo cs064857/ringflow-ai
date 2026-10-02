@@ -16,8 +16,8 @@ export class AudioEngine {
     // 延遲初始化 AudioContext 以符合 iOS/Safari 手勢喚醒規範
   }
 
-  // 解鎖並取得 AudioContext 以適配 iOS Safari
-  private getContext(): AudioContext {
+  // 解鎖並取得 AudioContext
+  public ensureContext(): AudioContext {
     if (!this.ctx) {
       const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new AudioCtxClass();
@@ -32,10 +32,10 @@ export class AudioEngine {
     return this.rawBuffer;
   }
 
-  // 解碼音訊二進制資料：完美相容 Safari / iOS WebKit 與 Chromium
+  // 解碼音訊二進制資料：相容 Safari / Chrome / Firefox
   public async loadAudioData(arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
     this.rawBuffer = arrayBuffer;
-    const ctx = this.getContext();
+    const ctx = this.ensureContext();
     this.stop();
 
     if (ctx.state === "suspended") {
@@ -44,29 +44,34 @@ export class AudioEngine {
       } catch {}
     }
 
-    // 優先使用標準 Promise 風格，若失敗或不支援回退至 Callback 模式
-    try {
+    return new Promise((resolve, reject) => {
+      let done = false;
       const copy = arrayBuffer.slice(0);
-      const decoded = await ctx.decodeAudioData(copy);
-      this.currentBuffer = decoded;
-      this.pauseOffset = 0;
-      return decoded;
-    } catch (promiseErr) {
-      return new Promise((resolve, reject) => {
-        const copy = arrayBuffer.slice(0);
-        ctx.decodeAudioData(
-          copy,
-          (decoded) => {
-            this.currentBuffer = decoded;
-            this.pauseOffset = 0;
-            resolve(decoded);
-          },
-          (err) => {
-            reject(err || promiseErr || new Error("Safari 音訊解碼失敗"));
-          }
-        );
-      });
-    }
+
+      const onSuccess = (decoded: AudioBuffer) => {
+        if (done) return;
+        done = true;
+        this.currentBuffer = decoded;
+        this.pauseOffset = 0;
+        resolve(decoded);
+      };
+
+      const onError = (err: unknown) => {
+        if (done) return;
+        done = true;
+        reject(err || new Error("音訊解碼失敗"));
+      };
+
+      try {
+        // Safari / WebKit callback 優先相容
+        const res = ctx.decodeAudioData(copy, onSuccess, onError);
+        if (res && typeof res.then === "function") {
+          res.then(onSuccess).catch(onError);
+        }
+      } catch (e) {
+        onError(e);
+      }
+    });
   }
 
   public getDuration(): number {
@@ -89,7 +94,7 @@ export class AudioEngine {
   // 播放指定時間點或區間
   public play(fromSec?: number, toSec?: number) {
     if (!this.currentBuffer) return;
-    const ctx = this.getContext();
+    const ctx = this.ensureContext();
 
     this.stop();
 
