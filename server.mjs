@@ -1,5 +1,6 @@
 import express from "express";
 import path from "node:path";
+import fs from "node:fs";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { analyzeAudioWithLLM } from "./audio-agent-core.mjs";
@@ -10,11 +11,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3005;
 
-//支援大容量音訊Base64上傳（50MB）
+// 支援大容量音訊Base64上傳（50MB）
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-//跨域支援
+// 跨域支援
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -25,6 +26,19 @@ app.use((req, res, next) => {
   next();
 });
 
+function getYtDlpArgs(extraArgs = []) {
+  const args = [
+    "--js-runtimes", "quickjs:/usr/bin/qjs",
+    "--remote-components", "ejs:github",
+    "--no-warnings"
+  ];
+  const cookiePath = path.resolve(__dirname, "cookies.txt");
+  if (fs.existsSync(cookiePath)) {
+    args.push("--cookies", cookiePath);
+  }
+  return [...args, ...extraArgs];
+}
+
 // 1. YouTube 資訊端點
 app.get("/api/youtube-info", (req, res) => {
   const targetUrl = req.query.url;
@@ -32,16 +46,15 @@ app.get("/api/youtube-info", (req, res) => {
     return res.status(400).json({ error: "缺少 url 參數" });
   }
 
-  const proc = spawn("yt-dlp", [
-    "--extractor-args", "youtube:player_client=android,ios",
-    "--dump-json",
-    "--no-playlist",
-    "--no-warnings",
-    targetUrl
-  ]);
+  const args = getYtDlpArgs(["--dump-json", "--no-playlist", targetUrl]);
+  const proc = spawn("yt-dlp", args, {
+    env: { ...process.env, HTTP_PROXY: "", HTTPS_PROXY: "", http_proxy: "", https_proxy: "" }
+  });
 
   let stdoutData = "";
+  let stderrData = "";
   proc.stdout.on("data", (chunk) => { stdoutData += chunk.toString(); });
+  proc.stderr.on("data", (chunk) => { stderrData += chunk.toString(); });
 
   proc.on("close", (code) => {
     if (code === 0) {
@@ -54,9 +67,10 @@ app.get("/api/youtube-info", (req, res) => {
           uploader: info.uploader || ""
         });
       } catch {
-        //解析失敗
+        // 解析失敗
       }
     }
+    console.error("[yt-dlp info error]", stderrData);
     return res.json({
       success: true,
       title: "YouTube 音訊",
@@ -74,14 +88,16 @@ app.get("/api/youtube-audio", (req, res) => {
 
   res.setHeader("Content-Type", "audio/mp4");
 
-  const yt = spawn("yt-dlp", [
-    "--extractor-args", "youtube:player_client=android,ios",
+  const args = getYtDlpArgs([
     "-f", "bestaudio/best",
     "-o", "-",
     "--quiet",
-    "--no-warnings",
     targetUrl
   ]);
+
+  const yt = spawn("yt-dlp", args, {
+    env: { ...process.env, HTTP_PROXY: "", HTTPS_PROXY: "", http_proxy: "", https_proxy: "" }
+  });
 
   yt.stdout.pipe(res);
 
@@ -95,8 +111,8 @@ app.post("/api/agent", async (req, res) => {
   try {
     const body = req.body || {};
     const config = {
-      PI_AGENT_PROVIDER: process.env.PI_AGENT_PROVIDER || "google",
-      PI_AGENT_MODEL: process.env.PI_AGENT_MODEL || "gemini-2.0-flash",
+      PI_AGENT_PROVIDER: process.env.PI_AGENT_PROVIDER || "openai",
+      PI_AGENT_MODEL: process.env.PI_AGENT_MODEL || "gemini-3.8-flash-high",
       PI_AGENT_API_KEY: process.env.PI_AGENT_API_KEY || "",
       PI_AGENT_BASE_URL: process.env.PI_AGENT_BASE_URL || ""
     };
