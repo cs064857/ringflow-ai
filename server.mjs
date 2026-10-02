@@ -79,7 +79,7 @@ app.get("/api/youtube-info", (req, res) => {
   });
 });
 
-// 2. YouTube 音訊串流端點
+// 2. YouTube 音訊轉碼串流端點（透過 ffmpeg 即時轉為通用 mp3 格式）
 app.get("/api/youtube-audio", (req, res) => {
   const targetUrl = req.query.url;
   if (!targetUrl || typeof targetUrl !== "string") {
@@ -97,24 +97,44 @@ app.get("/api/youtube-audio", (req, res) => {
     env: { ...process.env, HTTP_PROXY: "", HTTPS_PROXY: "", http_proxy: "", https_proxy: "" }
   });
 
+  const ffmpeg = spawn("ffmpeg", [
+    "-i", "pipe:0",
+    "-f", "mp3",
+    "-acodec", "libmp3lame",
+    "-ab", "192k",
+    "-ar", "44100",
+    "pipe:1"
+  ]);
+
+  yt.stdout.pipe(ffmpeg.stdin);
+
   let hasData = false;
-  yt.stdout.on("data", (chunk) => {
+  ffmpeg.stdout.on("data", (chunk) => {
     if (!hasData) {
       hasData = true;
-      res.setHeader("Content-Type", "audio/mp4");
+      res.setHeader("Content-Type", "audio/mpeg");
     }
     res.write(chunk);
   });
 
-  yt.on("close", (code) => {
+  ffmpeg.on("close", (code) => {
     if (!hasData) {
       return res.status(400).send("無法下載音訊串流，該影片受限或無效");
     }
     res.end();
   });
 
+  yt.on("error", () => {
+    try { ffmpeg.kill(); } catch {}
+  });
+
+  ffmpeg.on("error", () => {
+    try { yt.kill(); } catch {}
+  });
+
   req.on("close", () => {
     yt.kill();
+    ffmpeg.kill();
   });
 });
 
