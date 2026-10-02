@@ -13,21 +13,17 @@ export class AudioEngine {
   public onStateChange?: (isPlaying: boolean) => void;
 
   constructor() {
-    //延遲初始化AudioContext以符合iOS/Safari手勢喚醒規範
+    // 延遲初始化 AudioContext 以符合 iOS/Safari 手勢喚醒規範
   }
 
-  //解鎖並取得AudioContext以適配iOS Safari
-  private async getContext(): Promise<AudioContext> {
+  // 解鎖並取得 AudioContext 以適配 iOS Safari
+  private getContext(): AudioContext {
     if (!this.ctx) {
       const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new AudioCtxClass();
     }
     if (this.ctx.state === "suspended") {
-      try {
-        await this.ctx.resume();
-      } catch {
-        // 忽略 resume 錯誤
-      }
+      this.ctx.resume().catch(() => {});
     }
     return this.ctx;
   }
@@ -36,49 +32,41 @@ export class AudioEngine {
     return this.rawBuffer;
   }
 
-  //解碼音訊二進制資料：相容 Safari Promise 與 Callback 雙模式，並加入超時防護
+  // 解碼音訊二進制資料：完美相容 Safari / iOS WebKit 與 Chromium
   public async loadAudioData(arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
     this.rawBuffer = arrayBuffer;
-    const ctx = await this.getContext();
+    const ctx = this.getContext();
     this.stop();
 
-    return new Promise((resolve, reject) => {
-      let settled = false;
-      const copy = arrayBuffer.slice(0);
-
-      // 10秒超時防護，防止 Safari decodeAudioData 靜默掛起
-      const timeoutId = setTimeout(() => {
-        if (!settled) {
-          settled = true;
-          reject(new Error("Safari 音訊解碼超時"));
-        }
-      }, 10000);
-
-      const onSuccess = (decoded: AudioBuffer) => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timeoutId);
-        this.currentBuffer = decoded;
-        this.pauseOffset = 0;
-        resolve(decoded);
-      };
-
-      const onError = (err: unknown) => {
-        if (settled) return;
-        settled = true;
-        clearTimeout(timeoutId);
-        reject(err || new Error("音訊解碼失敗"));
-      };
-
+    if (ctx.state === "suspended") {
       try {
-        const res = ctx.decodeAudioData(copy, onSuccess, onError);
-        if (res && typeof res.then === "function") {
-          res.then(onSuccess).catch(onError);
-        }
-      } catch (e) {
-        onError(e);
-      }
-    });
+        await ctx.resume();
+      } catch {}
+    }
+
+    // 優先使用標準 Promise 風格，若失敗或不支援回退至 Callback 模式
+    try {
+      const copy = arrayBuffer.slice(0);
+      const decoded = await ctx.decodeAudioData(copy);
+      this.currentBuffer = decoded;
+      this.pauseOffset = 0;
+      return decoded;
+    } catch (promiseErr) {
+      return new Promise((resolve, reject) => {
+        const copy = arrayBuffer.slice(0);
+        ctx.decodeAudioData(
+          copy,
+          (decoded) => {
+            this.currentBuffer = decoded;
+            this.pauseOffset = 0;
+            resolve(decoded);
+          },
+          (err) => {
+            reject(err || promiseErr || new Error("Safari 音訊解碼失敗"));
+          }
+        );
+      });
+    }
   }
 
   public getDuration(): number {
@@ -98,10 +86,10 @@ export class AudioEngine {
     return this.pauseOffset + (this.ctx.currentTime - this.startTime);
   }
 
-  //播放指定時間點或區間
-  public async play(fromSec?: number, toSec?: number) {
+  // 播放指定時間點或區間
+  public play(fromSec?: number, toSec?: number) {
     if (!this.currentBuffer) return;
-    const ctx = await this.getContext();
+    const ctx = this.getContext();
 
     this.stop();
 
@@ -150,9 +138,7 @@ export class AudioEngine {
       try {
         this.activeSource.stop();
         this.activeSource.disconnect();
-      } catch {
-        //忽略重複停止之例外
-      }
+      } catch {}
       this.activeSource = null;
     }
     this.isPlaying = false;
@@ -192,7 +178,7 @@ export class AudioEngine {
     }
   }
 
-  //純前端音訊渲染導出：裁切、淡入淡出、峰值正規化
+  // 純前端音訊渲染導出：裁切、淡入淡出、峰值正規化
   public async renderRingtoneBuffer(
     startSec: number,
     endSec: number,
@@ -205,7 +191,6 @@ export class AudioEngine {
     const sampleRate = 44100;
     const channels = Math.min(2, this.currentBuffer.numberOfChannels);
 
-    //使用離線上下文進行渲染
     const offlineCtx = new OfflineAudioContext(
       channels,
       Math.ceil(sampleRate * duration),
@@ -215,10 +200,8 @@ export class AudioEngine {
     const source = offlineCtx.createBufferSource();
     source.buffer = this.currentBuffer;
 
-    //建立增益節點處理淡入淡出與音量正規化
     const gainNode = offlineCtx.createGain();
 
-    //計算截取區間最大峰值以進行音量正規化
     let peak = 0;
     const startSample = Math.floor(startSec * this.currentBuffer.sampleRate);
     const endSample = Math.min(
@@ -236,13 +219,11 @@ export class AudioEngine {
     const normGain = peak > 0.05 ? Math.min(2.5, 0.95 / peak) : 1.0;
     gainNode.gain.setValueAtTime(normGain, 0);
 
-    //套用淡入曲線
     if (fadeInSec > 0) {
       gainNode.gain.setValueAtTime(0, 0);
       gainNode.gain.linearRampToValueAtTime(normGain, Math.min(fadeInSec, duration / 2));
     }
 
-    //套用淡出曲線
     if (fadeOutSec > 0 && duration > fadeOutSec) {
       const fadeStart = duration - fadeOutSec;
       gainNode.gain.setValueAtTime(normGain, fadeStart);
@@ -258,7 +239,7 @@ export class AudioEngine {
     return this.audioBufferToWavBlob(renderedBuffer);
   }
 
-  //將AudioBuffer轉換編碼為標準WAV PCM二進制Blob
+  // 將 AudioBuffer 轉換編碼為標準 WAV PCM 二進制 Blob
   private audioBufferToWavBlob(buffer: AudioBuffer): Blob {
     const numChannels = buffer.numberOfChannels;
     const sampleRate = buffer.sampleRate;
@@ -287,7 +268,6 @@ export class AudioEngine {
     const arrayBuffer = new ArrayBuffer(bufferSize);
     const view = new DataView(arrayBuffer);
 
-    //寫入RIFF標頭
     this.writeString(view, 0, "RIFF");
     view.setUint32(4, 36 + dataSize, true);
     this.writeString(view, 8, "WAVE");
@@ -302,7 +282,6 @@ export class AudioEngine {
     this.writeString(view, 36, "data");
     view.setUint32(40, dataSize, true);
 
-    //寫入16-bit PCM採樣
     let offset = 44;
     for (let i = 0; i < result.length; i++) {
       let sample = Math.max(-1, Math.min(1, result[i]));

@@ -873,8 +873,10 @@ class RingflowApp {
       this.updateTimeDisplays();
 
       this.showToast(`✅ YouTube 音訊載入成功！總時長 ${this.formatTime(this.audioDuration)}`);
-    } catch (err) {
-      this.showToast("⚠️ YouTube 音訊解析失敗，請確認網址或改用本地檔案上傳");
+    } catch (err: any) {
+      console.error("[Ringflow Load Error]", err);
+      const msg = err?.message ? `⚠️ ${err.message}` : "⚠️ YouTube 音訊解析失敗，請確認網址或改用本地檔案上傳";
+      this.showToast(msg);
     } finally {
       this.isLoadingYoutube = false;
       if (btnYoutubeText) btnYoutubeText.textContent = "解析載入";
