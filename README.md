@@ -52,6 +52,36 @@ PORT=3005
 
 ---
 
+## 🐳 Docker 容器化部署
+
+本專案支援全功能 Docker 鏡像，容器內建 `ffmpeg` 與 `yt-dlp`，並整合 Node.js 生產伺服器與多模態 AI 代理：
+
+### 1. 使用 Docker Compose（推薦）
+```bash
+# 複製環境變數設定
+cp .env.example .env
+# 編輯 .env 填入您的 API Key
+
+# 構建並啟動容器
+docker compose up -d --build
+```
+啟動後訪問 `http://localhost:3005` 即可。
+
+### 2. 使用原生 Docker 指令
+```bash
+# 構建鏡像
+docker build -t ringflow-ai .
+
+# 運行容器
+docker run -d \
+  -p 3005:3005 \
+  --env-file .env \
+  --name ringflow-ai \
+  ringflow-ai
+```
+
+---
+
 ## 🚀 本地開發與 Cloudflare 部署
 
 ### 1. 本地啟動開發伺服器

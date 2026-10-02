@@ -1,0 +1,17 @@
+services:
+  ringflow-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ringflow-ai
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3005}:3005"
+    environment:
+      - PORT=3005
+      - PI_AGENT_PROVIDER=${PI_AGENT_PROVIDER:-google}
+      - PI_AGENT_MODEL=${PI_AGENT_MODEL:-gemini-2.0-flash}
+      - PI_AGENT_API_KEY=${PI_AGENT_API_KEY:-}
+      - PI_AGENT_BASE_URL=${PI_AGENT_BASE_URL:-}
+    env_file:
+      - .env
