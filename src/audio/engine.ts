@@ -13,17 +13,21 @@ export class AudioEngine {
   public onStateChange?: (isPlaying: boolean) => void;
 
   constructor() {
-    //延遲初始化AudioContext以符合iOS手勢喚醒規範
+    //延遲初始化AudioContext以符合iOS/Safari手勢喚醒規範
   }
 
   //解鎖並取得AudioContext以適配iOS Safari
-  private getContext(): AudioContext {
+  private async getContext(): Promise<AudioContext> {
     if (!this.ctx) {
       const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new AudioCtxClass();
     }
     if (this.ctx.state === "suspended") {
-      this.ctx.resume();
+      try {
+        await this.ctx.resume();
+      } catch {
+        // 忽略 resume 錯誤
+      }
     }
     return this.ctx;
   }
@@ -32,25 +36,48 @@ export class AudioEngine {
     return this.rawBuffer;
   }
 
-  //解碼音訊二進制資料兼容舊版Safari callback模式
+  //解碼音訊二進制資料：相容 Safari Promise 與 Callback 雙模式，並加入超時防護
   public async loadAudioData(arrayBuffer: ArrayBuffer): Promise<AudioBuffer> {
     this.rawBuffer = arrayBuffer;
-    const ctx = this.getContext();
+    const ctx = await this.getContext();
     this.stop();
 
     return new Promise((resolve, reject) => {
+      let settled = false;
       const copy = arrayBuffer.slice(0);
-      ctx.decodeAudioData(
-        copy,
-        (decoded) => {
-          this.currentBuffer = decoded;
-          this.pauseOffset = 0;
-          resolve(decoded);
-        },
-        (err) => {
-          reject(err || new Error("音訊解碼失敗"));
+
+      // 10秒超時防護，防止 Safari decodeAudioData 靜默掛起
+      const timeoutId = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          reject(new Error("Safari 音訊解碼超時"));
         }
-      );
+      }, 10000);
+
+      const onSuccess = (decoded: AudioBuffer) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeoutId);
+        this.currentBuffer = decoded;
+        this.pauseOffset = 0;
+        resolve(decoded);
+      };
+
+      const onError = (err: unknown) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeoutId);
+        reject(err || new Error("音訊解碼失敗"));
+      };
+
+      try {
+        const res = ctx.decodeAudioData(copy, onSuccess, onError);
+        if (res && typeof res.then === "function") {
+          res.then(onSuccess).catch(onError);
+        }
+      } catch (e) {
+        onError(e);
+      }
     });
   }
 
@@ -67,15 +94,14 @@ export class AudioEngine {
   }
 
   public getCurrentTime(): number {
-    if (!this.isPlaying) return this.pauseOffset;
-    const ctx = this.getContext();
-    return this.pauseOffset + (ctx.currentTime - this.startTime);
+    if (!this.isPlaying || !this.ctx) return this.pauseOffset;
+    return this.pauseOffset + (this.ctx.currentTime - this.startTime);
   }
 
   //播放指定時間點或區間
-  public play(fromSec?: number, toSec?: number) {
+  public async play(fromSec?: number, toSec?: number) {
     if (!this.currentBuffer) return;
-    const ctx = this.getContext();
+    const ctx = await this.getContext();
 
     this.stop();
 
