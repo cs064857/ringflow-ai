@@ -873,12 +873,6 @@ class RingflowApp {
       this.updateTimeDisplays();
 
       this.showToast(`✅ YouTube 音訊載入成功！總時長 ${this.formatTime(this.audioDuration)}`);
-
-      //自動觸發 AI 助手分析副歌
-      this.agent.addThinkingMessage();
-      this.renderChatMessages();
-      await this.agent.analyzeChorus(this.audioFileName, this.audioDuration);
-      this.renderChatMessages();
     } catch (err) {
       this.showToast("⚠️ YouTube 音訊解析失敗，請確認網址或改用本地檔案上傳");
     } finally {
@@ -961,12 +955,6 @@ class RingflowApp {
       this.updateTimeDisplays();
 
       this.showToast(`音訊解析成功！總時長 ${this.formatTime(this.audioDuration)}`);
-
-      //自動觸發 AI 助手分析
-      this.agent.addThinkingMessage();
-      this.renderChatMessages();
-      await this.agent.analyzeChorus(this.audioFileName, this.audioDuration);
-      this.renderChatMessages();
     } catch {
       this.showToast("音訊檔案載入失敗，請確認格式是否正確");
     }

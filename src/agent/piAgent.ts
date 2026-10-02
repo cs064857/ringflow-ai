@@ -63,7 +63,7 @@ export class SongChorusAgent {
       id: "u-" + Date.now(),
       role: "user",
       timeStr: this.formatTimeNow(),
-      content: `選取人體重點片段：(${songTitle || "音訊檔案"})，長度約 ${Math.floor(duration)} 秒`
+      content: `分析歌曲重點副歌片段：(${songTitle || "音訊檔案"})，長度約 ${Math.floor(duration)} 秒`
     };
     this.messages.push(userMsg);
 
